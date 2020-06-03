@@ -1,0 +1,48 @@
+// HashMap/HashSet and dfs solution
+class Solution {
+    private boolean validPattern;
+    
+    private void helper(HashMap<Character, String> map, HashSet<String> words, Map<Character, Integer> freq, String pattern, String str) {
+        if (validPattern || pattern.isEmpty() && !str.isEmpty() || !pattern.isEmpty() && str.isEmpty()) 
+            return;
+        if (pattern.isEmpty() && str.isEmpty()) {
+            validPattern = true;
+            return;
+        }
+        
+        char patt = pattern.charAt(0);
+        int charFreq = freq.get(patt);
+        if (map.containsKey(patt)) {
+            String word = map.get(patt);
+            if (word.length() > str.length() || !word.equals(str.substring(0, word.length())))
+                return;
+            helper(map, words, freq, pattern.substring(1), str.substring(word.length()));
+        } else {
+            for (int i = 1; i < str.length() / charFreq + 1; i++) {
+                String wordMatch = str.substring(0, i);
+                if (words.contains(wordMatch))
+                    continue;
+                map.put(patt, wordMatch);
+                words.add(wordMatch);
+                helper(map, words, freq, pattern.substring(1), str.substring(i));
+                map.remove(patt);
+                words.remove(wordMatch);
+            }
+        }
+    }
+    
+    public boolean wordPatternMatch(String pattern, String str) {
+        Map<Character, Integer> freq = new HashMap<>();
+        for (int i = 0; i < pattern.length(); i++) {
+            char patt = pattern.charAt(i);
+            if (!freq.containsKey(patt)) {
+                freq.put(patt, 1);
+            } else {
+                freq.replace(patt, freq.get(patt) + 1);
+            }
+        }
+        
+        helper(new HashMap<Character, String>(), new HashSet<String>(), freq, pattern, str);
+        return validPattern;
+    }
+}
