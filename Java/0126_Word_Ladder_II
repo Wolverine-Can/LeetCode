@@ -1,0 +1,72 @@
+// bfs + dfs
+class Solution {
+    private Set<String> neighbors(String word, List<String> wordList) {
+        Set<String> neighbors = new HashSet<>();
+        for (String s: wordList) {
+            int diff = 0;
+            for (int i = 0; i < word.length() && diff <= 1; i++) {
+                if (word.charAt(i) != s.charAt(i)) diff += 1;
+                if (diff > 1) break;
+            }
+            if (diff == 1) neighbors.add(s);
+        }
+        return neighbors;
+    }
+    
+    private List<List<String>> bfs (String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
+        boolean foundPath = false;
+        Queue<String> queue = new LinkedList<>();
+        Set<String> marked = new HashSet<>();
+        queue.offer(beginWord);
+        marked.add(beginWord);
+        while (!queue.isEmpty() && !foundPath) {
+            int size = queue.size();
+            res.add(new ArrayList<>(queue));
+            for (int i = 0; i < size; i++) {
+                for (String neighbor : neighbors(queue.poll(), wordList)) {
+                    if (neighbor.equals(endWord)) {
+                        foundPath = true;
+                        break;
+                    }
+                    if (!marked.contains(neighbor)) {
+                        queue.offer(neighbor);
+                        marked.add(neighbor);
+                    }
+                }
+            }
+        }
+        return foundPath ? res : null;
+    }
+    
+    private void dfs(String beginWord, List<List<String>> layers, List<String> wordList, List<String> preList, List<List<String>> res) {
+        if (layers.isEmpty()) {
+            res.add(new ArrayList<String>(preList));
+            return;
+        }
+        
+        for (String neighbor : neighbors(beginWord, wordList)) {
+            List<String> nextLayer = layers.remove(layers.size() - 1);
+            
+            if (nextLayer.contains(neighbor)) {
+                preList.add(neighbor);
+                dfs(neighbor, layers, wordList, preList, res);
+                preList.remove(preList.size() - 1);
+            }
+            layers.add(nextLayer);
+        }
+    }
+    
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
+        wordList.add(beginWord);
+        if (beginWord.length() != endWord.length() || wordList.isEmpty())
+            return res;
+        List<List<String>> layers = bfs(endWord, beginWord, wordList);
+        if (layers == null)
+            return res;
+            
+        dfs(beginWord, layers, wordList, new ArrayList<String>(){{add(beginWord);}}, res);
+        return res;
+    }
+}
