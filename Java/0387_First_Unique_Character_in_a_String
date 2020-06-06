@@ -4,19 +4,14 @@ class Solution {
         private charNode prev;
         private charNode next;
         private int index;
-        private char character;
-        private charNode(char c, int index) {
-            this.character = c;
+        private charNode(int index) {
             this.index = index;
         }
-        private charNode() {};
     }
     
     public int firstUniqChar(String s) {
-        if (s.isEmpty())
-            return -1;
-        charNode sentinelFirst = new charNode();
-        charNode sentinelLast = new charNode();
+        charNode sentinelFirst = new charNode(-1);
+        charNode sentinelLast = new charNode(-1);
         sentinelFirst.next = sentinelLast;
         sentinelLast.prev = sentinelFirst;
         Map<Character, charNode> map = new HashMap<>();
@@ -34,7 +29,7 @@ class Solution {
                 node.next.prev = node.prev;
             } else {
                 candidates.add(c);
-                charNode node = new charNode(c, i);
+                charNode node = new charNode(i);
                 sentinelLast.prev.next = node;
                 node.prev = sentinelLast.prev;
                 node.next = sentinelLast;
@@ -42,6 +37,6 @@ class Solution {
                 map.put(c, node);
             }
         }
-        return (sentinelFirst.next == sentinelLast) ? -1 : sentinelFirst.next.index;
+        return sentinelFirst.next.index;
     }
 }
