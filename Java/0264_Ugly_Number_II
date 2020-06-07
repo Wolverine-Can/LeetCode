@@ -1,0 +1,26 @@
+// PQ
+class Solution {
+    private void addNumbers(PriorityQueue<Long> PQ, Set<Long> passedNumbers, long number) {
+        int[] primeFactors = new int[] {2, 3, 5};
+        for (Integer i : primeFactors) {
+            long next = number * i;
+            if (!passedNumbers.contains(next))
+                PQ.offer(next);
+                passedNumbers.add(next);
+        }
+    }
+    
+    public int nthUglyNumber(int n) {
+        PriorityQueue<Long> PQ = new PriorityQueue<>();
+        Set<Long> passedNumbers = new HashSet<>();
+        PQ.offer(1L);
+        while (!PQ.isEmpty()) {
+            n -= 1;
+            long number = PQ.poll();
+            if (n == 0)
+                return (int) number;
+            addNumbers(PQ, passedNumbers, number);
+        }
+        return -1;
+    }
+}
