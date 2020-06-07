@@ -1,0 +1,24 @@
+// memoization
+class Solution {
+    private int divide_conquer(int[][] memo, boolean[][] computed, int row, int col, List<List<Integer>> triangle) {
+        if (row == triangle.size())
+            return 0;
+        if (computed[row][col])
+            return memo[row][col];
+        int left = divide_conquer(memo, computed, row + 1, col, triangle);
+        int right = divide_conquer(memo, computed, row + 1, col + 1, triangle);
+        memo[row][col] = triangle.get(row).get(col) + Math.min(left, right);
+        computed[row][col] = true;
+        return memo[row][col];
+    }
+    
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int n = triangle.size();
+        boolean[][] computed = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(computed[i], false);
+        }
+        int[][] memo = new int[n][n];
+        return divide_conquer(memo, computed, 0, 0, triangle);
+    }
+}
