@@ -1,0 +1,39 @@
+//dp
+class Solution {
+    private boolean canBreak(String s, int preLength, List<String> wordDict,
+                Map<Integer, Boolean> isPossible, int maxLength, String preStr, List<String> res) {
+        if (isPossible.containsKey(preLength) && !isPossible.get(preLength))
+            return false;
+        if (s.equals("")) {
+            res.add(preStr.substring(1));
+            return true;
+        }
+        boolean canbreak = false;
+        for (int i = 1; i <= maxLength && i <= s.length(); i++) {
+            String substr = s.substring(0, i);
+            if (!wordDict.contains(substr))
+                continue;
+            if (canBreak(s.substring(i), preLength + i, wordDict, isPossible,
+                   maxLength, preStr + " " + substr, res)) {
+                isPossible.put(preLength, true);
+                canbreak = true;
+            }
+        }
+        if (!isPossible.containsKey(preLength)) {
+            isPossible.put(preLength, false);
+        }
+        return canbreak;
+    }
+    
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        List<String> res = new LinkedList<>();
+        Map<Integer, Boolean> isPossible = new HashMap<>();
+        int maxLength = 0;
+        for (String str : wordDict) {
+            if (str.length() > maxLength)
+                maxLength = str.length();
+        }
+        canBreak(s, 0, wordDict, isPossible, maxLength, "", res);
+        return res;
+    }
+}
