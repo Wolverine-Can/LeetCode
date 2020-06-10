@@ -1,0 +1,36 @@
+// memoization
+class Solution {
+    private boolean memoDP(String s, int i, String p, int j, boolean[][] notMatch) {
+        boolean match = false;
+        if (i < s.length() && j < p.length()) {
+            if (notMatch[i][j])
+                return false;
+            if ((p.charAt(j) == '.' || p.charAt(j) == s.charAt(i))
+                && memoDP(s, i + 1, p, j + 1, notMatch))
+                match = true;
+            else if (p.charAt(j) == '*') {
+                if ((p.charAt(j - 1) == '.' || p.charAt(j - 1) == s.charAt(i))
+                   && memoDP(s, i + 1, p, j, notMatch) || memoDP(s, i, p, j + 1, notMatch))
+                    match = true;
+                else if (memoDP(s, i, p, j + 1, notMatch))
+                    match = true;
+            }
+            else if (j + 1 < p.length() && p.charAt(j + 1) == '*' && memoDP(s, i, p, j + 2, notMatch))
+                match = true; 
+            if (!match)
+            notMatch[i][j] = true;
+        }
+        else if (i == s.length() && j == p.length())
+            match = true;
+        else if (j + 1 < p.length() && p.charAt(j + 1) == '*') {
+            return memoDP(s, i, p, j + 2, notMatch);
+        }
+        else if (j < p.length() && p.charAt(j) == '*' && memoDP(s, i, p, j + 1, notMatch))
+            match = true;
+        return match;
+    }
+    
+    public boolean isMatch(String s, String p) {
+        return memoDP(s, 0, p, 0, new boolean[s.length()][p.length()]);
+    }
+}
