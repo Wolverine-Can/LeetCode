@@ -1,0 +1,21 @@
+// backtracking
+class Solution {
+    private void insertRightParenthesis(int n, int left, int right, String pre, List<String> res) {
+        if (left == n && right == n) {
+            res.add(pre);
+            return;
+        }
+        if (left < n) {
+            insertRightParenthesis(n, left + 1, right, pre + '(', res);
+        }
+        if (right < left) {
+            insertRightParenthesis(n, left, right + 1, pre + ')', res);
+        }
+    }
+    
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new LinkedList<>();
+        insertRightParenthesis(n, 0, 0, "", res);
+        return res;
+    }
+}
