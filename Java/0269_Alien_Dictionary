@@ -1,0 +1,74 @@
+// BFS
+class Solution {
+    private void addChars(Set<Character> chars, String[] words) {
+        for (String s : words) {
+            for (int i = 0; i < s.length(); i++) {
+                chars.add(s.charAt(i));
+            }
+        }
+    }
+    
+    private boolean generateGraph(String first, String second, Map<Character, Set<Character>> edges) {
+        for (int i = 0; i < first.length() && i < second.length(); i++) {
+            char from = first.charAt(i);
+            char to = second.charAt(i);
+            if (from == to) {
+                continue;
+            } else {
+                if (!edges.containsKey(from)) {
+                    edges.put(from, new HashSet<>());
+                }
+                edges.get(from).add(to);
+                return true;
+            }
+        }
+        return first.length() <= second.length();
+    }
+    
+    public String alienOrder(String[] words) {
+        Map<Character, Integer> inDegree = new HashMap<>();
+        Map<Character, Set<Character>> edges = new HashMap<>();
+        Set<Character> chars = new HashSet<>();
+        addChars(chars, words);
+        for (int i = 1; i < words.length; i++) {
+            if (!generateGraph(words[i - 1], words[i], edges)) {
+                return "";
+            }
+        }
+        for (Character from : edges.keySet()) {
+            for (Character to : edges.get(from)) {
+                if (!inDegree.containsKey(to)) {
+                    inDegree.put(to, 1);
+                } else {
+                    inDegree.replace(to, inDegree.get(to) + 1);
+                }
+            }
+        }
+        
+        Queue<Character> queue = new LinkedList<>();
+        StringBuilder res = new StringBuilder();
+        for (Character c : chars) {
+            if (!inDegree.containsKey(c)) {
+                queue.offer(c);
+                res.append(c);
+            }
+        }
+        while (!queue.isEmpty()) {
+            char from = queue.poll();
+            for (Character to : edges.getOrDefault(from, new HashSet<>())) {
+                int newInDegree = inDegree.get(to) - 1;
+                inDegree.replace(to, newInDegree);
+                if (newInDegree == 0) {
+                    queue.offer(to);
+                    res.append(to);
+                }
+            }
+        }
+        for (Character c : inDegree.keySet()) {
+            if (inDegree.get(c) > 0) {
+                return "";
+            }
+        }
+        return res.toString();
+    }
+}
