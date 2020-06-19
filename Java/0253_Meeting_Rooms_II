@@ -1,0 +1,24 @@
+class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+        Arrays.sort(intervals, new Comparator<>() {
+            @Override
+            public int compare(int[] a, int[] b) {
+                return a[0] - b[0];
+            }
+        });
+        int minRooms = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for (int[] meeting : intervals) {
+            if (pq.isEmpty()) {
+                pq.offer(meeting[1]);
+            } else {
+                while (!pq.isEmpty() && pq.peek() <= meeting[0]) {
+                    pq.poll();
+                }
+                pq.offer(meeting[1]);
+            }
+            minRooms = Math.max(minRooms, pq.size());
+        }
+        return minRooms;
+    }
+}
