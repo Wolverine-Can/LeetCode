@@ -1,0 +1,35 @@
+// time complexity: O(nlogk)
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> frequency = new HashMap<>();
+        for (String word : words) {
+            if (!frequency.containsKey(word)) {
+                frequency.put(word, 1);
+            } else {
+                frequency.replace(word, frequency.get(word) + 1);
+            }
+        }
+        PriorityQueue<String> pq = new PriorityQueue<>(new Comparator<>() {
+           @Override
+            public int compare (String a, String b) {
+                if (frequency.get(a) == frequency.get(b)) {
+                    return b.compareTo(a);
+                } else {
+                    return frequency.get(a) - frequency.get(b);
+                }
+            }
+        });
+        
+        for (String word : frequency.keySet()) {
+            pq.offer(word);
+            if (pq.size() > k) {
+                pq.poll();
+            }
+        }
+        LinkedList<String> ans = new LinkedList<>();
+        while (!pq.isEmpty()) {
+            ans.addFirst(pq.poll());
+        }
+        return ans;
+    }
+}
