@@ -1,0 +1,59 @@
+class TimeMap {
+    private Map<String, List<valueInfo>> map;
+    private class valueInfo {
+        private String value;
+        private int timestamp;
+        private valueInfo (String value, int timestamp) {
+            this.value = value;
+            this.timestamp = timestamp;
+        }
+    }
+    /** Initialize your data structure here. */
+    public TimeMap() {
+        map = new HashMap<>();
+    }
+    
+    public void set(String key, String value, int timestamp) {
+        if (!map.containsKey(key)) {
+            map.put(key, new ArrayList<valueInfo>(){{
+                add(new valueInfo(value, timestamp));
+            }});
+        } else {
+            map.get(key).add(new valueInfo(value, timestamp));
+        }
+    }
+    
+    public String get(String key, int timestamp) {
+        if (!map.containsKey(key)) {
+            return "";
+        }
+        List<valueInfo> list = map.get(key);
+        int left = 0, right = list.size() - 1;
+        if (timestamp < list.get(left).timestamp) {
+            return "";
+        }
+        if (timestamp > list.get(right).timestamp) {
+            return list.get(right).value;
+        }
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (list.get(mid).timestamp < timestamp) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        if (list.get(right).timestamp == timestamp) {
+            return list.get(right).value;
+        } else {
+            return list.get(left).value;
+        }
+    }
+}
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * TimeMap obj = new TimeMap();
+ * obj.set(key,value,timestamp);
+ * String param_2 = obj.get(key,timestamp);
+ */
