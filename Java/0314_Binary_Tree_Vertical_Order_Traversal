@@ -1,0 +1,57 @@
+// BFS + HashMap + MinHeap, O(nlog(n))
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private void bfs(TreeNode root, Map<Integer, List<Integer>> map) {
+        Queue<Pair<Integer, TreeNode>> queue = new LinkedList<>();
+        queue.offer(new Pair(0, root));
+        while (!queue.isEmpty()) {
+            Pair<Integer, TreeNode> p = queue.poll();
+            int col = p.getKey();
+            TreeNode node = p.getValue();
+            if (!map.containsKey(col)) {
+                map.put(col, new LinkedList<>());
+            }
+            map.get(col).add(node.val);
+            if (node.left != null) {
+                queue.offer(new Pair(col - 1, node.left));
+            }
+            if (node.right != null) {
+                queue.offer(new Pair(col + 1, node.right));
+            }
+        }
+    }
+    private void sort(Map<Integer, List<Integer>> map, List<List<Integer>> ans) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>((a, b) -> a - b);
+        for (Integer i : map.keySet()) {
+            minHeap.offer(i);
+        }
+        while (!minHeap.isEmpty()) {
+            ans.add(map.get(minHeap.poll()));
+        }
+    }
+    
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        List<List<Integer>> ans = new LinkedList<>();
+        if (root == null) {
+            return ans;
+        }
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        bfs(root, map);
+        sort(map, ans);
+        return ans;
+    }
+}
