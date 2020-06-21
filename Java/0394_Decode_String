@@ -1,0 +1,49 @@
+class Solution {
+    private class stringInfo {
+        private int n;
+        private String s;
+        private stringInfo(int n, String s) {
+            this.n = n;
+            this.s = s;
+        }
+        
+        private String toStr() {
+            String res = "";
+            for (int i = 0; i < n; i++) {
+                res += s;
+            }
+            return res;
+        }
+        
+    }
+    public String decodeString(String s) {
+        int i = 0;
+        StringBuilder ans = new StringBuilder();
+        Stack<stringInfo> stack = new Stack<>();
+        
+        while (i < s.length()) {
+            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                int n = 0;
+                while (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                    n = 10 *n + s.charAt(i++) - '0';
+                }
+                stack.push (new stringInfo(n, ""));
+            } else if (s.charAt(i) == ']') {
+                String repeat = stack.pop().toStr();
+                if (stack.isEmpty()) {
+                    ans.append(repeat);
+                } else {
+                    stack.peek().s += repeat;
+                }
+            } else {
+                if (stack.isEmpty()) {
+                    ans.append(s.charAt(i));
+                } else {
+                    stack.peek().s += s.charAt(i);
+                }
+            }
+            i += 1;
+        }
+        return ans.toString();
+    }
+}
