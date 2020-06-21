@@ -11,14 +11,10 @@ class Solution {
             ans.add(ip);
         }
         int number = 0;
-        String str = "";
         for (int i = index; i < s.length() && i < index + 3; i++) {
             number = 10 * number + s.charAt(i) - '0';
-            str += s.charAt(i);
-            if (Integer.toString(number).length() < str.length()) {
-                continue;
-            }
-            if (number < 256) {
+            int lowBound = (i == index) ? 0 : (int)Math.pow(10, i - index);
+            if (number < 256 && number >= lowBound) {
                 pre.add(Integer.toString(number));
                 dfs(s, i + 1, pre, ans);
                 pre.remove(pre.size() - 1);
