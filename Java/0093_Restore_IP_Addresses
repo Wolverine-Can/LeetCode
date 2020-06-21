@@ -1,0 +1,34 @@
+class Solution {
+    private void dfs(String s, int index, List<String> pre, List<String> ans) {
+        if(s.length() - index > 3 * (4 - pre.size())) {
+            return;
+        }
+        if (pre.size() == 4 && index == s.length()) {
+            String ip = pre.get(0);
+            for (int i = 1; i < 4; i++) {
+                ip += '.' + pre.get(i);
+            }
+            ans.add(ip);
+        }
+        int number = 0;
+        String str = "";
+        for (int i = index; i < s.length() && i < index + 3; i++) {
+            number = 10 * number + s.charAt(i) - '0';
+            str += s.charAt(i);
+            if (Integer.toString(number).length() < str.length()) {
+                continue;
+            }
+            if (number < 256) {
+                pre.add(Integer.toString(number));
+                dfs(s, i + 1, pre, ans);
+                pre.remove(pre.size() - 1);
+            }
+        }
+    }
+    
+    public List<String> restoreIpAddresses(String s) {
+        List<String> ans = new LinkedList<>();
+        dfs(s, 0, new LinkedList<String>(), ans);
+        return ans;
+    }
+}
