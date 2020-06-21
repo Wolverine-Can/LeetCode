@@ -1,0 +1,23 @@
+class Solution {
+    private int[] getMid(int[] a, int[] b) {
+        int left = Math.max(a[0], b[0]);
+        int right = Math.min(a[1], b[1]);
+        return new int[]{left, right};
+    }
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        int Aindex = 0, Bindex = 0;
+        List<int[]> ans = new ArrayList<>();
+        while (Aindex < A.length && Bindex < B.length) {
+            if (A[Aindex][0] <= B[Bindex][1] && A[Aindex][0] >= B[Bindex][0]
+                || B[Bindex][0] <= A[Aindex][1] && B[Bindex][0] >= A[Aindex][0]){
+                ans.add(getMid(A[Aindex], B[Bindex]));
+            }
+            if (A[Aindex][1] > B[Bindex][1]) {
+                Bindex += 1;
+            } else {
+                Aindex += 1;
+            }
+        }
+        return ans.toArray(new int[ans.size()][]);
+    }
+}
