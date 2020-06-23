@@ -1,0 +1,41 @@
+class Solution {
+    private class positionInfo {
+        private int row;
+        private int col;
+        private int val;
+        private positionInfo(int row, int col, int val) {
+            this.row = row;
+            this.col = col;
+            this.val = val;
+        }
+    }
+    private boolean inBound(int[][] matrix, int row, int col) {
+        return row >= 0 && row < matrix.length && col >= 0 && col < matrix[0].length;
+    }
+    
+    public int kthSmallest(int[][] matrix, int k) {
+        if (matrix.length == 0) {
+            return -1;
+        }
+        int row = matrix.length, col = row;
+        int[] dm = new int[] {0, 1};
+        int[] dn = new int[] {1, 0};
+        boolean[][] visited = new boolean[row][col];
+        visited[0][0] = true;
+        PriorityQueue<positionInfo> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+        pq.offer(new positionInfo(0, 0, matrix[0][0]));
+        while (k > 1) {
+            positionInfo p = pq.poll();
+            k -= 1;
+            int m = p.row, n = p.col;
+            for (int i = 0; i < 2; i++) {
+                int nextM = m +dm[i], nextN = n + dn[i];
+                if (inBound(matrix, nextM, nextN) && !visited[nextM][nextN]) {
+                    pq.offer(new positionInfo(nextM, nextN, matrix[nextM][nextN]));
+                    visited[nextM][nextN] = true;
+                }
+            }
+        }
+        return pq.peek().val;
+    }
+}
