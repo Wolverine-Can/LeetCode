@@ -1,0 +1,47 @@
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        if (beginWord.length() != endWord.length()) return 0;
+        Set<String> marked = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        marked.add(beginWord);
+        boolean findWord = false;
+        int steps = 0;
+        Set<String> sameSizeWords = new HashSet<>();
+        for (String word : wordList) {
+            if (word.length() == beginWord.length()) sameSizeWords.add(word);
+        }
+        
+        while (!queue.isEmpty() && findWord == false) {
+            int size = queue.size();
+            steps += 1;
+            if (queue.contains(endWord)) {
+                findWord = true; 
+                break;
+            }
+            for (int i = 0; i < size; i++) {
+                String word = queue.poll();
+                for (String s : neighbors(word, sameSizeWords)) {
+                    if (!marked.contains(s)) {
+                        queue.offer(s);
+                        marked.add(s);
+                    }
+                }
+            }
+        }
+        return findWord ? steps : 0;
+    }
+    
+    private Set<String> neighbors(String word, Set<String> sameSizeWords) {
+        Set<String> neighbors = new HashSet<>();
+        for (String s: sameSizeWords) {
+            int diff = 0;
+            for (int i = 0; i < word.length() && diff <= 1; i++) {
+                if (word.charAt(i) != s.charAt(i)) diff += 1;
+                if (diff > 1) break;
+            }
+            if (diff == 1) neighbors.add(s);
+        }
+        return neighbors;
+    }
+}
