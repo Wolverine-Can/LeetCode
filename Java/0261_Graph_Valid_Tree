@@ -1,0 +1,38 @@
+class Solution {
+    int setNumber;
+    private int find(int[] parent, int a) {
+        int x = a, pa;
+        while (parent[x] > 0) {
+            x = parent[x];
+        }
+        while (a != x) {
+            pa = parent[a];
+            parent[a] = x;
+            a = pa;
+        }
+        return x;
+    }
+    
+    private void connect(int[] parent, int a, int b) {
+        int pa = find(parent, a);
+        int pb = find(parent, b);
+        if (pa != pb) {
+            setNumber -= 1;
+            parent[pb] += parent[pa];
+            parent[pa] = pb;
+        }
+    }
+    
+    public boolean validTree(int n, int[][] edges) {
+        if (n - edges.length != 1) {
+            return false;
+        }
+        setNumber = n;
+        int[] parent = new int[n];
+        Arrays.fill(parent, -1);
+        for (int[] edge : edges) {
+            connect(parent, edge[0], edge[1]);
+        }
+        return setNumber == 1;
+    }
+}
