@@ -1,0 +1,57 @@
+class Solution {
+    class UnionFind{
+        int[] parent;
+        public UnionFind(int n) {
+            parent = new int[n * 10];
+            Arrays.fill(parent, -1);
+        }
+        public int find(int x) {
+            int head = x, px;
+            while (parent[head] >= 0) {
+                head = parent[head];
+            }
+            while (x != head) {
+                px = parent[x];
+                parent[x] = head;
+                x = px;
+            }
+            return head;
+        }
+        public void union(int x, int y) {
+            int px = find(x);
+            int py = find(y);
+            if (px != py) {
+                parent[px] = py;
+            }
+        }
+    }
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        Map<String, String> emailToName = new HashMap<>();
+        Map<String, Integer> emailToIndex = new HashMap<>();
+        int index = 0;
+        UnionFind UF = new UnionFind(accounts.size());
+        for (List<String> account : accounts) {
+            for (int i = 1; i < account.size(); i++) {
+                if (!emailToName.containsKey(account.get(i))) {
+                    emailToName.put(account.get(i), account.get(0));
+                    emailToIndex.put(account.get(i), index++);
+                }
+                if (i > 1) {
+                    UF.union(emailToIndex.get(account.get(i)), emailToIndex.get(account.get(i - 1)));
+                }
+            }
+        }
+        Map<Integer, List<String>> ans = new HashMap<>();
+        for (String email : emailToName.keySet()) {
+            if (!ans.containsKey(UF.find(emailToIndex.get(email)))) {
+                ans.put(UF.find(emailToIndex.get(email)), new LinkedList<>());
+            }
+            ans.get(UF.find(emailToIndex.get(email))).add(email);
+        }
+        for (List<String> account : ans.values()) {
+            Collections.sort(account);
+            account.add(0, emailToName.get(account.get(0)));
+        }
+        return new LinkedList<>(ans.values());
+    }
+}
