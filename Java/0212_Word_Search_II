@@ -59,10 +59,11 @@ class Solution {
         for (String word : words) {
             insert(word);
         }
+        boolean[][] visited = new boolean[row][col];
         for (int m = 0; m < row; m++) {
             for (int n = 0; n < col; n++) {
                 if (root.sons[board[m][n] - 'a'] != null) {
-                    search(board, new boolean[row][col], m, n, root.sons[board[m][n] - 'a'], ans);
+                    search(board, visited, m, n, root.sons[board[m][n] - 'a'], ans);
                 }
             }
         }
