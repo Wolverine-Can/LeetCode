@@ -30,7 +30,7 @@ class Solution {
         return x >= 0 && x < m && y >= 0 && y < n;
     }
     
-    private int coordToIndex(int x, int y, int[][] board) {
+    public int coordToIndex(int x, int y, int[][] board) {
         int col = board[0].length;
         return x * col + y;
     }
