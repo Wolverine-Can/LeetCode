@@ -1,0 +1,82 @@
+/**
+ * Definition for a Connection.
+ * public class Connection {
+ *   public String city1, city2;
+ *   public int cost;
+ *   public Connection(String city1, String city2, int cost) {
+ *       this.city1 = city1;
+ *       this.city2 = city2;
+ *       this.cost = cost;
+ *   }
+ * }
+ */
+public class Solution {
+    /**
+     * @param connections given a list of connections include two cities and cost
+     * @return a list of connections from results
+     */
+    public class UnionFind {
+    	public Map<String, String> parent;
+    	public Set<String> nodes;
+    	public int setNumber;
+    	public UnionFind () {
+    		parent = new HashMap<>();
+    		nodes = new HashSet<>();
+    		setNumber = 0;
+    	}
+    	public String find(String x) {
+    		String head = x, px;
+    		while (parent.containsKey(head)) {
+    			head = parent.get(head);
+    		}
+    		while (!x.equals(head)) {
+    			px = parent.get(x);
+    			parent.replace(x, head);
+    			x = px;
+    		}
+    		return head;
+    	}
+    	public void union(String x, String y) {
+    		String hx = find(x);
+    		String hy = find(y);
+    		if (!hx.equals(hy)) {
+    			parent.put(hx, hy);
+    			setNumber += 1;
+    		    setNumber = nodes.contains(x) ? setNumber - 1 : setNumber;
+    		    setNumber = nodes.contains(y) ? setNumber - 1 : setNumber;
+    		    nodes.add(x);
+    		    nodes.add(y);
+    		}
+    	}
+    }
+
+    public List<Connection> lowestCost(List<Connection> connections) {
+    	List<Connection> ans = new ArrayList<>();
+    	if (connections.isEmpty()) {
+    		return ans;
+    	}
+    	UnionFind UF = new UnionFind();
+        PriorityQueue<Connection> pq = new PriorityQueue<>((a, b) -> {
+        	if (a.cost != b.cost) {
+        		return a.cost - b.cost;
+        	} else if(!a.city1.equals(b.city1)) {
+        		return a.city1.compareTo(b.city1);
+        	} else {
+        		return a.city2.compareTo(b.city2);
+        	}
+        });
+        for (Connection c : connections) {
+        	pq.offer(c);
+        }
+        while (!pq.isEmpty()) {
+        	Connection c = pq.poll();
+        	String city1 = c.city1;
+        	String city2 = c.city2;
+        	if (!UF.find(city1).equals(UF.find(city2))) {
+        		ans.add(c);
+        		UF.union(city1, city2);
+        	}
+        }
+        return UF.setNumber == 1 ? ans : new ArrayList<Connection>();
+    }
+}
