@@ -1,0 +1,73 @@
+class Solution {
+    public class UnionFind{
+        int[] parent;
+        public UnionFind(int m, int n) {
+            parent = new int[m * n];
+            Arrays.fill(parent, -1);
+        }
+        public int find(int x) {
+            int head = x, px;
+            while (parent[head] >= 0) {
+                head = parent[head];
+            }
+            while (x != head) {
+                px = parent[x];
+                parent[x] = head;
+                x = px;
+            }
+            return head;
+        }
+        public void union (int x, int y) {
+            int px = find(x);
+            int py = find(y);
+            if (px != py) {
+                parent[px] = py;
+            }
+        }
+    }
+    
+    public boolean inBound(int x, int y, int m, int n) {
+        return x >= 0 && x < m && y >= 0 && y < n;
+    }
+    
+    private int coordToIndex(int x, int y, int[][] board) {
+        int col = board[0].length;
+        return x * col + y;
+    }
+        
+    public List<Integer> numIslands2(int m, int n, int[][] positions) {
+        if (m == 0 || n == 0) {
+            return null;
+        }
+        int[][] board = new int[m][n];
+        UnionFind UF = new UnionFind(m, n);
+        for (int[] row : board) {
+            Arrays.fill(row, 0);
+        }
+        List<Integer> ans = new LinkedList<>();
+        int NofIslands = 0;
+        int[] dm = new int[]{0, 0, 1, -1};
+        int[] dn = new int[]{1, -1, 0, 0};
+        for (int[] position : positions) {
+            if (board[position[0]][position[1]] == 1) {
+                ans.add(NofIslands);
+                continue;
+            }
+            board[position[0]][position[1]] = 1;
+            NofIslands += 1;
+            int index = coordToIndex(position[0], position[1], board);
+            for (int i = 0; i < 4; i++) {
+                int neighborM = position[0] + dm[i];
+                int neighborN = position[1] + dn[i];
+                int neighborIndex = coordToIndex(neighborM, neighborN, board);
+                if (inBound(neighborM, neighborN, m, n)
+                    && board[neighborM][neighborN] == 1 && UF.find(index) != UF.find(neighborIndex)) {
+                    UF.union(index, neighborIndex);
+                    NofIslands -= 1;
+                }
+            }
+            ans.add(NofIslands);
+        }
+        return ans;
+    }
+}
