@@ -1,0 +1,57 @@
+class Solution {
+    public class pos {
+        int m, n, height;
+        public pos(int m, int n, int height) {
+            this.m = m;
+            this.n = n;
+            this.height = height;
+        }
+    }
+    public boolean inBound(int[][] heightMap, int m, int n) {
+        int row = heightMap.length, col = heightMap[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    public int trapRainWater(int[][] heightMap) {
+        if (heightMap.length == 0 || heightMap[0].length == 0) {
+            return 0;
+        }
+        int row = heightMap.length, col = heightMap[0].length, ans = 0;
+        PriorityQueue<pos> PQ = new PriorityQueue<>((a, b) -> a.height - b.height);
+        boolean[][] visited = new boolean[row][col];
+        for (int m = 0; m < row; m++) {
+            PQ.offer(new pos(m, 0, heightMap[m][0]));
+            PQ.offer(new pos(m, col - 1, heightMap[m][col - 1]));
+            visited[m][0] = true;
+            visited[m][col - 1] = true;
+        }
+        for (int n = 0; n < col; n++) {
+            PQ.offer(new pos(0, n, heightMap[0][n]));
+            PQ.offer(new pos(row - 1, n, heightMap[row - 1][n]));
+            visited[0][n] = true;
+            visited[row - 1][n] = true;
+        }
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        while (!PQ.isEmpty()) {
+            pos p = PQ.poll();
+            int m = p.m;
+            int n = p.n;
+            int height = p.height;
+            for (int i = 0; i < 4; i++) {
+                int nm = m + dm[i];
+                int nn = n + dn[i];
+                if (inBound(heightMap, nm, nn) && !visited[nm][nn]) {
+                    visited[nm][nn] = true;
+                    if (heightMap[nm][nn] < height) {
+                        PQ.offer(new pos(nm, nn, height));
+                        ans += height - heightMap[nm][nn];
+                    } else {
+                        PQ.offer(new pos(nm, nn, heightMap[nm][nn]));
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
