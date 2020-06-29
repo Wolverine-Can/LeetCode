@@ -1,0 +1,40 @@
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int[] height = new int[heights.length + 2];
+        for (int i = 0; i < heights.length; i++) {
+            height[i + 1] = heights[i];
+        }
+        Stack<Integer> stack = new Stack<>();
+        int ans = 0;
+        stack.push(0);
+        for(int i = 1; i <height.length; i++) {
+            while (height[stack.peek()] > height[i]) {
+                int h = height[stack.pop()];
+                int start = stack.peek() + 1;
+                ans = Math.max(ans, (i - start) * h);
+            }
+            stack.push(i);
+        }
+        return ans;
+    }
+    
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int row = matrix.length, col = matrix[0].length;
+        int[] heights = new int[col];
+        int ans = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == '1') {
+                    heights[j] += 1;
+                } else {
+                    heights[j] = 0;
+                }
+            }
+            ans = Math.max(ans, largestRectangleArea(heights));
+        }
+        return ans;
+    }
+}
