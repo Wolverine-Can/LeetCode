@@ -1,0 +1,47 @@
+// twp heaps solution
+class Solution {
+    private void balance(PriorityQueue<Integer> MinHeap, PriorityQueue<Integer> MaxHeap) {
+        while (MinHeap.size() > MaxHeap.size()) {
+            MaxHeap.offer(MinHeap.poll());
+        }
+        while (MaxHeap.size() - 1 > MinHeap.size()) {
+            MinHeap.offer(MaxHeap.poll());
+        }
+    }
+    private double getMean(PriorityQueue<Integer> MinHeap, PriorityQueue<Integer> MaxHeap, int k) {
+        if (k % 2 == 0) {
+            return (double) MinHeap.peek() / 2 + (double) MaxHeap.peek() / 2;
+        } else {
+            return (double) MaxHeap.peek();
+        }
+    }
+    
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        if (nums.length == 0 || k == 0) {
+            return null;
+        }
+        PriorityQueue<Integer> MinHeap = new PriorityQueue<>();
+        PriorityQueue<Integer> MaxHeap = new PriorityQueue<>((a, b) -> b - a);
+        double[] ans = new double[nums.length - k + 1];
+        for (int i = 0; i < k; i++) {
+            MaxHeap.offer(nums[i]);
+        }
+        balance(MinHeap, MaxHeap);
+        ans[0] = getMean(MinHeap, MaxHeap, k);
+        for (int i = k; i < nums.length; i++) {
+            if (nums[i - k] <= MaxHeap.peek()) {
+                MaxHeap.remove(nums[i - k]);
+            } else {
+                MinHeap.remove(nums[i - k]);
+            }
+            if ((!MaxHeap.isEmpty() && nums[i] <= MaxHeap.peek())) {
+                MaxHeap.offer(nums[i]);
+            } else {
+                MinHeap.offer(nums[i]);
+            }
+            balance(MinHeap, MaxHeap);
+            ans[i - k + 1] = getMean(MinHeap, MaxHeap, k);
+        }
+        return ans;
+    }
+}
