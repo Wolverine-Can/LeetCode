@@ -1,0 +1,32 @@
+class Solution {
+    public int divide(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        if (dividend == Integer.MIN_VALUE) {
+            if (divisor > 0) {
+                dividend += divisor;
+                return -1 + divide(dividend, divisor);
+            } else {
+                dividend -= divisor;
+                return 1 + divide(dividend, divisor);
+            }
+        }
+        if (divisor == Integer.MIN_VALUE || Math.abs(dividend) < Math.abs(divisor)) {
+            return 0;
+        }
+        int mult = (dividend > 0 && divisor > 0 || dividend < 0 && divisor < 0) ?  1 : -1;
+        int ans = 0, divisor_copy = divisor;
+        while (Math.abs(dividend) >= Math.abs(divisor_copy)) {
+            dividend -= mult > 0 ? divisor_copy: -divisor_copy;
+            ans += mult;
+            if (divisor_copy > 0 && (divisor_copy + divisor_copy) < 0
+                || divisor_copy < 0 && (divisor_copy + divisor_copy) > 0) {
+                break;
+            }
+            divisor_copy += divisor_copy;
+            mult += mult;
+        }
+        return ans + divide(dividend, divisor);
+    }
+}
