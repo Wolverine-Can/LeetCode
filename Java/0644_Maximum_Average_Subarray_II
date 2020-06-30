@@ -1,0 +1,31 @@
+// binary search answer
+class Solution {
+    private boolean existLargerAve(double diffSum[], int k) {
+        double minSum = 0;
+        for (int i = 0; i < diffSum.length - k + 1; i++) {
+            if (diffSum[i + k - 1] - minSum > 0) {
+                return true;
+            }
+            minSum = Math.min(minSum, diffSum[i]);
+        }
+        return false;
+    }
+    public double findMaxAverage(int[] nums, int k) {
+        int n = nums.length;
+        double[] diffSum = new double[n];
+        double left = -10000, right = 10000;
+        while (left + 1e-5 < right) {
+            double mid = (left + right) / 2;
+            diffSum[0] = nums[0] - mid;
+            for (int i = 1; i < n; i++) {
+                diffSum[i] = diffSum[i - 1] + nums[i] - mid;
+            }
+            if (existLargerAve(diffSum, k)) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return right;
+    }
+}
