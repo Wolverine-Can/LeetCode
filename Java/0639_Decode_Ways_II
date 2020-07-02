@@ -1,0 +1,47 @@
+class Solution {
+    private int mod = 1000000007;
+    private int dp(String s, int index, int[] memo) {
+        if (memo[index] != -1) {
+            return memo[index];
+        }
+        if (s.charAt(index) == '0') {
+            memo[index] = 0;
+            return 0;
+        }
+        long ans = 0;
+        long next1 = dp(s, index + 1, memo) % mod;
+        ans += s.charAt(index) == '*' ? 9 * next1: next1;
+        
+        if (index < s.length() - 1) {
+            long next2 = dp(s, index + 2, memo) % mod;
+            if (s.charAt(index) == '1') {
+                ans += s.charAt(index + 1) == '*' ? 9 * next2 : next2;
+            }
+            if (s.charAt(index) == '2' && s.charAt(index + 1) >= '0' && s.charAt(index + 1) <= '6') {
+                ans += next2;
+            }
+            if (s.charAt(index) == '2' && s.charAt(index + 1) == '*') {
+                ans += 6 * next2;
+            }
+            if (s.charAt(index) == '*' && s.charAt(index + 1) != '*') {
+                ans += next2;
+            }
+            if (s.charAt(index) == '*' && s.charAt(index + 1) >= '0' && s.charAt(index + 1) <= '6') {
+                ans += next2;
+            }
+            if (s.charAt(index) == '*' && s.charAt(index + 1) == '*') {
+                ans += 15 * next2;
+            }
+        }
+        ans = ans % mod;
+        memo[index] = (int)ans;
+        return (int)ans;
+    }
+    
+    public int numDecodings(String s) {
+        int[] memo = new int[s.length() + 1];
+        Arrays.fill(memo, -1);
+        memo[s.length()] = 1;
+        return dp(s, 0, memo);
+    }
+}
