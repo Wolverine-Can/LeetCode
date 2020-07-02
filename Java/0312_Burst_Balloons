@@ -1,0 +1,32 @@
+class Solution {
+    private int dp(int left, int[] nums, int right, Integer[][] memo) {
+        if (memo[left][right] != null) {
+            return memo[left][right];
+        }
+        int totalMax = 0;
+        for (int i = left; i <= right; i++) {
+            int max = 0;
+            if (i > left) {
+                max += dp(left, nums, i - 1, memo);
+            }
+            if (i < right) {
+                max += dp(i + 1, nums, right, memo);
+            }
+            max += nums[left - 1] * nums[i] * nums[right + 1];
+            totalMax = Math.max(totalMax, max);
+        }
+        memo[left][right] = totalMax;
+        return totalMax;
+    }
+    
+    public int maxCoins(int[] A) {
+        int[] nums = new int[A.length + 2];
+        nums[0] = 1;
+        nums[nums.length - 1] = 1;
+        for (int i = 0; i < A.length; i++) {
+            nums[i + 1] = A[i];
+        }
+        Integer[][] memo = new Integer[nums.length][nums.length];
+        return dp(1, nums, nums.length - 2, memo);
+    }
+}
