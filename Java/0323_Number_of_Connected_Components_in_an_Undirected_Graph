@@ -1,0 +1,38 @@
+class Solution {
+    private class UnionFind{
+        private int[] parent;
+        private int setNumber;
+        private UnionFind(int n) {
+            setNumber = n;
+            parent = new int[n];
+            Arrays.fill(parent, -1);
+        }
+        private int find(int x) {
+            int head = x, px;
+            while(parent[head] != -1) {
+                head = parent[head];
+            }
+            while (x != head) {
+                px = parent[x];
+                parent[x] = head;
+                x = px;
+            }
+            return head;
+        }
+        private void connect(int x, int y) {
+            int hx = find(x);
+            int hy = find(y);
+            if (hx != hy) {
+                setNumber -= 1;
+                parent[hx] = hy;
+            }
+        }
+    }
+    public int countComponents(int n, int[][] edges) {
+        UnionFind UF = new UnionFind(n);
+        for (int i = 0; i < edges.length; i++) {
+            UF.connect(edges[i][0], edges[i][1]);
+        }
+        return UF.setNumber;
+    }
+}
