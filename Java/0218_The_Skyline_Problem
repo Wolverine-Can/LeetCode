@@ -1,0 +1,46 @@
+class Solution {
+    private class pointInfo{
+        private int i;
+        private int loc;
+        private int flag;
+        private pointInfo(int i, int loc, int flag) {
+            this.i = i;
+            this.loc = loc;
+            this.flag = flag;
+        }
+    }
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        List<List<Integer>> ans = new LinkedList<>();
+        if (buildings.length == 0) {
+            return ans;
+        }
+        PriorityQueue<pointInfo> PQ = new PriorityQueue<>((a, b) -> a.loc - b.loc);
+        for (int i = 0; i < buildings.length; i++) {
+            PQ.offer(new pointInfo(i, buildings[i][0], 0));
+            PQ.offer(new pointInfo(i, buildings[i][1], 1));
+        }
+        PriorityQueue<Integer> height = new PriorityQueue<>((a, b)-> buildings[b][2] - buildings[a][2]);
+        int skyline = 0;
+        int loc = -1;
+        while (!PQ.isEmpty()) {
+            loc = PQ.peek().loc;
+            while (!PQ.isEmpty() && loc == PQ.peek().loc) {
+                pointInfo p = PQ.poll();
+                if (p.flag == 0) {
+                    height.offer(p.i);
+                } else {
+                    height.remove(p.i);
+                }
+            }
+            skyline = height.isEmpty() ? 0 : buildings[height.peek()][2];
+            if (!ans.isEmpty() && skyline == ans.get(ans.size() - 1).get(1)) {
+                continue;
+            }
+            List<Integer> skyl = new LinkedList<>();
+            skyl.add(loc);
+            skyl.add(skyline);
+            ans.add(skyl);
+        }
+        return ans;
+    }
+}
