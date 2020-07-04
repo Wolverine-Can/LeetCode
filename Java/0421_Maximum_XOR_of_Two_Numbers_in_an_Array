@@ -1,0 +1,94 @@
+class Solution {
+    public class TrieNode{
+        public TrieNode[] sons;
+        public boolean isKey;
+        public int number;
+        public TrieNode() {
+            this.sons = new TrieNode[2];
+            Arrays.fill(sons, null);
+            this.isKey = false;
+        }
+    }
+    
+    public class Trie{
+        public TrieNode root;
+        public Trie(){
+            this.root = new TrieNode();
+        }
+        public void insert(String binaryNumber) {
+            TrieNode node = root;
+            char[] number = binaryNumber.toCharArray();
+            for (int i = 0; i < number.length; i++) {
+                char bit = number[i];
+                if (node.sons[bit - '0'] == null) {
+                    node.sons[bit - '0'] = new TrieNode();
+                }
+                node = node.sons[bit - '0'];
+            }
+            node.isKey = true;
+            node.number = toDecimal(binaryNumber);
+        }
+    }
+    
+    private int toDecimal(String binaryNumber) {
+        int number = 0;
+        char[] bi = binaryNumber.toCharArray();
+        for (int i = 0; i < bi.length; i++) {
+            number = 2 * number + bi[i] - '0';
+        }
+        return number;
+    }
+    
+    private String extendBinaryString(String x, int len) {
+        StringBuilder bi = new StringBuilder();
+        bi.append(x);
+        while (bi.length() < len) {
+            bi.insert(0, '0');
+        }
+        return bi.toString();
+    }
+    
+    private int findMax(Trie trie, int candidate) {
+        TrieNode node = trie.root;
+        char[] binaryStr = Integer.toBinaryString(candidate).toCharArray();
+        for (int i = 0; i < binaryStr.length; i++) {
+            int bit = binaryStr[i] - '0';
+            int toggleBit = 1 - bit;
+            if(node.sons[toggleBit] != null) {
+                node = node.sons[toggleBit];
+            } else {
+                node = node.sons[bit];
+            }
+        }
+        int number = node.number;
+        char[] binaryStr2 = extendBinaryString(Integer.toBinaryString(number), binaryStr.length).toCharArray();
+        StringBuilder XOR = new StringBuilder();
+        for (int i = 0; i < binaryStr.length; i++) {
+            XOR.append(binaryStr[i] == binaryStr2[i] ? 0 : 1);
+        }
+        return toDecimal(XOR.toString());
+    }
+    
+    public int findMaximumXOR(int[] nums) {
+        int max = 0;
+        Trie trie = new Trie();
+        Set<Integer> candidates = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            max = Math.max(max, nums[i]);
+        }
+        int maxLen = Integer.toBinaryString(max).length();
+        for (int i = 0; i < nums.length; i++) {
+            String binaryString = Integer.toBinaryString(nums[i]);
+            if (binaryString.length() == maxLen) {
+                candidates.add(nums[i]);
+            }
+            trie.insert(extendBinaryString(binaryString, maxLen));
+        }
+        int ans = 0;
+        for (Integer candidate : candidates) {
+            int maxXOR = findMax(trie, candidate);
+            ans = Math.max(ans, maxXOR);
+        }
+        return ans;
+    }
+}
