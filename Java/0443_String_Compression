@@ -1,0 +1,28 @@
+class Solution {
+    public int compress(char[] chars) {
+        if (chars== null || chars.length == 0) {
+            return 0;
+        }
+        int p1 = 0, p2 = 0;
+        while (p1 < chars.length) {
+            int count = 1;
+            char c = chars[p1];
+            while (p1 < chars.length - 1 && chars[p1] == chars[p1 + 1]) {
+                p1 += 1;
+                count += 1;
+            }
+            p1 += 1;
+            chars[p2] = c;
+            p2 += 1;
+            if (count > 1) {
+                String countStr = Integer.toString(count);
+                for (int i = 0; i < countStr.length(); i++) {
+                    chars[p2] = countStr.charAt(i);
+                    p2 += 1;
+                }
+            }
+            
+        }
+        return p2;
+    }
+}
