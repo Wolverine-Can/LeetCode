@@ -1,0 +1,25 @@
+public class Solution {
+    /**
+     * @param m: An integer m denotes the size of a backpack
+     * @param A: Given n items with size A[i]
+     * @return: The maximum size
+     */
+    public int backPack(int m, int[] A) {
+        boolean[][] f = new boolean[m + 1][A.length + 1];
+        int row = f.length, col = f[0].length;
+        int maxW = 0;
+        for (int w = 0; w < row; w++) {
+        	for (int n = 0; n < col; n++) {
+        		if (w == 0 || n == 0) {
+        			f[w][n] = w == 0 ? true: false;
+        			continue;
+        		}
+        		f[w][n] = f[w][n - 1] || (w - A[n - 1] >= 0 && f[w - A[n - 1]][n - 1]);
+        		if (f[w][n]) {
+        			maxW = Math.max(maxW, w);
+        		}
+        	}
+        }
+        return maxW;
+    }
+}
