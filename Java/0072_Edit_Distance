@@ -4,12 +4,8 @@ class Solution {
         int row = f.length, col = f[0].length;
         for (int m = 0; m < row; m++) {
             for (int n = 0; n < col; n++) {
-                if (m == 0) {
-                    f[m][n] = n;
-                    continue;
-                }
-                if (n == 0) {
-                    f[m][n] = m;
+                if (m == 0 || n == 0) {
+                    f[m][n] = m == 0 ? n : m;
                     continue;
                 }
                 f[m][n] = f[m][n - 1] + 1;
