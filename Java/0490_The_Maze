@@ -1,0 +1,43 @@
+class Solution {
+    class coordinate {
+        int x, y;
+        coordinate (int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    private boolean inBound(int[][] maze, int x, int y) {
+        int row = maze.length, col = maze[0].length;
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+    
+    public boolean hasPath(int[][] maze, int[] start, int[] destination) {
+        if (maze == null || maze.length == 0 || maze[0].length == 0 || maze[start[0]][start[1]] == 1) {
+            return false;
+        }
+        Queue<coordinate> queue = new LinkedList<>();
+        queue.offer(new coordinate(start[0], start[1]));
+        maze[start[0]][start[1]] = 2;
+        int[] dx = {0, 0, 1 ,-1};
+        int[] dy = {1, -1, 0 ,0};
+        while (!queue.isEmpty()) {
+            coordinate c = queue.poll();
+            for (int i = 0; i < 4; i++) {
+                int nx = c.x, ny = c.y;
+                while (inBound(maze, nx + dx[i], ny + dy[i]) && maze[nx + dx[i]][ny + dy[i]] != 1) {
+                    nx += dx[i];
+                    ny += dy[i];
+                }
+                if (nx == destination[0] && ny == destination[1]) {
+                    return true;
+                }
+                if (maze[nx][ny] == 0) {
+                    queue.offer(new coordinate(nx, ny));
+                    maze[nx][ny] = 2;
+                }
+            }
+        }
+        return false;
+    }
+}
