@@ -1,0 +1,62 @@
+class Solution {
+    class coordinate {
+        int x, y, dist;
+        coordinate (int x, int y) {
+            this.x = x;
+            this.y = y;
+            this.dist = Integer.MAX_VALUE;
+        }
+    }
+    
+    private boolean inBound(int[][] maze, int x, int y) {
+        int row = maze.length, col = maze[0].length;
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+    
+    private int toID(int[][] maze, int x, int y) {
+        int col = maze[0].length;
+        return x * col + y;
+    }
+        
+    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+        if (maze == null || maze.length == 0 || maze[0].length == 0) {
+            return -1;
+        }
+        PriorityQueue<coordinate> PQ = new PriorityQueue<>((a, b) -> a.dist - b.dist);
+        Map<Integer, coordinate> map = new HashMap<>();
+        coordinate source = new coordinate(start[0], start[1]);
+        source.dist = 0;
+        PQ.offer(source);
+        map.put(toID(maze, start[0], start[1]), source);
+        maze[start[0]][start[1]] = 2;
+        int[] dx = {0, 0, 1 ,-1};
+        int[] dy = {1, -1, 0 ,0};
+        while (!PQ.isEmpty()) {
+            coordinate c = PQ.poll();
+            if (c.x == destination[0] && c.y == destination[1]) {
+                return c.dist;
+            }
+            for (int i = 0; i < 4; i++) {
+                int nx = c.x, ny = c.y, nextDist = c.dist;
+                while (inBound(maze, nx + dx[i], ny + dy[i]) && maze[nx + dx[i]][ny + dy[i]] != 1) {
+                    nx += dx[i];
+                    ny += dy[i];
+                    nextDist += 1;
+                }
+                if (maze[nx][ny] == 0) {
+                    coordinate next = new coordinate(nx, ny);
+                    next.dist = nextDist;
+                    map.put(toID(maze, nx, ny), next);
+                    PQ.offer(next);
+                    maze[nx][ny] = 2;
+                } else if (maze[nx][ny] == 2 && nextDist < map.get(toID(maze, nx, ny)).dist) {
+                    coordinate next = map.get(toID(maze, nx, ny));
+                    PQ.remove(next);
+                    next.dist = nextDist;
+                    PQ.offer(next);
+                }
+            }
+        }
+        return -1;
+    }
+}
