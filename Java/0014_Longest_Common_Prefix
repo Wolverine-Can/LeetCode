@@ -1,0 +1,53 @@
+class Solution {
+    class Trie {
+        TrieNode root;
+        class TrieNode {
+            TrieNode[] sons;
+            int sonNumber;
+            List<TrieNode> sonList;
+            boolean isWord;
+            TrieNode() {
+                sons = new TrieNode[26];
+                sonNumber = 0;
+                sonList = new LinkedList<>();
+                isWord = false;
+            }
+        }
+        private Trie() {
+            root = new TrieNode();
+        }
+        private void insert(String s) {
+            char[] chars = s.toCharArray();
+            TrieNode node = root;
+            for (int i = 0; i < chars.length; i++) {
+                if (node.sons[s.charAt(i) - 'a'] == null) {
+                    node.sons[s.charAt(i) - 'a'] = new TrieNode();
+                    node.sonList.add(node.sons[s.charAt(i) - 'a']);
+                    node.sonNumber += 1;
+                }
+                node = node.sons[s.charAt(i) - 'a'];
+            }
+            node.isWord = true;
+        }
+        private int LCP() {
+            int prefix = 0;
+            TrieNode node = root;
+            while (node.sonNumber == 1 && !node.isWord) {
+                prefix += 1;
+                node = node.sonList.get(0);
+            }
+            return prefix;
+        }
+    }
+    
+    public String longestCommonPrefix(String[] strs) {
+        if (strs.length == 0) {
+            return "";
+        }
+        Trie trie = new Trie();
+        for (String s : strs) {
+            trie.insert(s);
+        }
+        return strs[0].substring(0, trie.LCP());
+    }
+}
