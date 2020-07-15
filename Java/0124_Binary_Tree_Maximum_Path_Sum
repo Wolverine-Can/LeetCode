@@ -1,0 +1,24 @@
+class Solution {
+    int maxPath;
+    
+    private int maxHalf(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        
+        
+        int leftSum = Math.max(maxHalf(root.left), 0);
+        int rightSum = Math.max(maxHalf(root.right), 0);
+        int pathSum = leftSum + root.val + rightSum;
+        maxPath = Math.max(maxPath, pathSum);
+        
+        int sonSum = Math.max(leftSum, rightSum);
+        return  sonSum > 0 ? sonSum + root.val : root.val;
+    }
+    
+    public int maxPathSum(TreeNode root) {
+        maxPath = Integer.MIN_VALUE;
+        maxHalf(root);
+        return maxPath;
+    }
+}
