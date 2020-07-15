@@ -1,0 +1,49 @@
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int[] n1 = new int[nums1.length + 2];
+        int[] n2 = new int[nums2.length + 2];
+        n1[0] = Integer.MIN_VALUE;
+        n2[0] = Integer.MIN_VALUE;
+        n1[n1.length - 1] = Integer.MAX_VALUE;
+        n2[n2.length - 1] = Integer.MAX_VALUE;
+        for (int i = 0; i < nums1.length; i++) {
+            n1[i + 1] = nums1[i];
+        }
+        for (int i = 0; i < nums2.length; i++) {
+            n2[i + 1] = nums2[i];
+        }
+        if (n1.length > n2.length) {
+            int[] temp = n1;
+            n1 = n2;
+            n2 = temp;
+        }
+        int len1 = n1.length, len2 = n2.length, left = 0, right = n1.length - 1;
+        int ptn1= left + (right - left + 1) / 2, ptn2 = (len1 + len2) / 2 - ptn1;
+        boolean end = false;
+        while (left + 1 < right && !end) {
+            ptn1 = left + (right - left + 1) / 2;
+            ptn2 = (len1 + len2) / 2 - ptn1;
+            if (n1[ptn1 - 1] > n2[ptn2]) {
+                right = ptn1;
+            } else if (n2[ptn2 - 1] > n1[ptn1]) {
+                left = ptn1;
+            } else {
+                end = true;
+            }
+        }
+        
+        if (!end) {
+            if (n2[(len1 + len2) / 2 - left - 1] > n1[left]) {
+                ptn1 = right;
+            } else {
+                ptn1 = left;
+            }
+        }
+        ptn2 = (len1 + len2) / 2 - ptn1;
+        if ((len1 + len2) % 2 == 0) {
+            return (double) (Math.max(n1[ptn1 - 1], n2[ptn2 - 1]) + Math.min(n1[ptn1], n2[ptn2])) / 2;
+        } else {
+            return Math.min(n1[ptn1], n2[ptn2]);
+        }
+    }
+}
