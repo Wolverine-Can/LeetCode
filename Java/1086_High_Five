@@ -1,0 +1,29 @@
+class Solution {
+    public int[][] highFive(int[][] items) {
+        HashMap<Integer, PriorityQueue<Integer>> topFive = new HashMap<>();
+        for (int[] item : items) {
+            if (!topFive.containsKey(item[0])) {
+                topFive.put(item[0], new PriorityQueue<Integer>());
+            }
+            PriorityQueue<Integer> pq = topFive.get(item[0]);
+            pq.offer(item[1]);
+            if (pq.size() > 5) {
+                pq.poll();
+            }
+        }
+        int[][] ans = new int[topFive.keySet().size()][2];
+        int index = 0;
+        for (Integer student : topFive.keySet()) {
+            ans[index][0] = student;
+            int ave = 0;
+            PriorityQueue<Integer> pq = topFive.get(student);
+            while(!pq.isEmpty()) {
+                ave += pq.poll();
+            }
+            ave /= 5;
+            ans[index][1] = ave;
+            index += 1;
+        }
+        return ans;
+    }
+}
