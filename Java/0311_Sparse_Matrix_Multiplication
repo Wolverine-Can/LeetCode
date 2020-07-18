@@ -1,0 +1,15 @@
+class Solution {
+    public int[][] multiply(int[][] A, int[][] B) {
+        int M = A.length, N = B[0].length;
+        int[][] ans = new int[M][N];
+        
+        for (int m = 0; m < M; m++) {
+            for (int n = 0; n <N; n++) {
+                for (int i = 0; i < A[0].length; i++) {
+                    ans[m][n] += A[m][i] * B[i][n];
+                }
+            }
+        }
+        return ans;
+    }
+}
