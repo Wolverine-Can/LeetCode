@@ -1,0 +1,18 @@
+class Solution {
+    public int jump(int[] nums) {
+        int[] jumpCount = new int[nums.length];
+        Arrays.fill(jumpCount, Integer.MAX_VALUE);
+        jumpCount[0] = 0;
+        for (int i = 0; i < jumpCount.length -1; i++) {
+            int maxLen = Math.min(nums[i], jumpCount.length - i - 1);
+            while (jumpCount[i + maxLen] > jumpCount[i] + 1) {
+                jumpCount[i + maxLen] = jumpCount[i] + 1;
+                if (i + maxLen == jumpCount.length - 1) {
+                    return jumpCount[jumpCount.length - 1];
+                }
+                maxLen -= 1;
+            }
+        }
+        return 0;
+    }
+}
