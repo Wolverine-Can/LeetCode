@@ -1,0 +1,13 @@
+class Solution {
+    public int minMoves(int[] nums) {
+        int minNumber = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            minNumber = Math.min(minNumber, nums[i]);
+        }
+        int ans = 0;
+        for (int i : nums) {
+            ans += i - minNumber;
+        }
+        return ans;
+    }
+}
