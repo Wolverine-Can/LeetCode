@@ -1,0 +1,23 @@
+class Solution {
+    public int[] sortedSquares(int[] A) {
+        int bound = 0;
+        while (bound < A.length - 1 && Math.abs(A[bound]) >= Math.abs(A[bound + 1])) {
+            bound += 1;
+        }
+        int left = bound, right = bound + 1;
+        System.out.println(bound);
+        int index = 0;
+        int[] ans = new int[A.length];
+        while (index < A.length) {
+            if (right >= A.length || (left >= 0 && Math.abs(A[left]) < Math.abs(A[right]))) {
+                ans[index] = A[left] * A[left];
+                left -= 1;
+            } else {
+                ans[index] = A[right] * A[right];
+                right += 1;
+            }
+            index += 1;
+        }
+        return ans;
+    }
+}
