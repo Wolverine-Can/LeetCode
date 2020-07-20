@@ -7,14 +7,7 @@ class Solution {
         ans.add(new ArrayList<Integer>(){{
             add(1);
         }});
-        if (numRows == 1) {
-            return ans;
-        }
-        ans.add(new ArrayList<Integer>(){{
-            add(1);
-            add(1);
-        }});
-        for (int i = 2; i < numRows; i++) {
+        for (int i = 1; i < numRows; i++) {
             List<Integer> row = new ArrayList<>();
             List<Integer> lastRow = ans.get(ans.size() - 1);
             row.add(1);
