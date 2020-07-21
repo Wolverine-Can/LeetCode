@@ -1,0 +1,31 @@
+class Solution {
+    public String reorganizeString(String S) {
+        int[] count = new int[26];
+        for (int i = 0; i < S.length(); i++) {
+            char c = S.charAt(i);
+            count[c - 'a'] += 1;
+            if (count[c - 'a'] > (S.length() + 1) / 2) {
+                return "";
+            }
+        }
+        PriorityQueue<Character> PQ = new PriorityQueue<>((c1, c2) -> count[c2 - 'a'] - count[c1 - 'a']);
+        for (int i  = 0; i < 26; i++) {
+            PQ.offer((char)('a' + i));
+        }
+        char[] ans = new char[S.length()];
+        int index = 0;
+        while (!PQ.isEmpty()) {
+            char c = PQ.poll();
+            int i = c -'a';
+            while (count[i] > 0) {
+                if (index >= S.length()) {
+                    index = 1;
+                }
+                ans[index] = c;
+                index += 2;
+                count[i] -= 1;
+            }
+        }
+        return String.valueOf(ans);
+    }
+}
