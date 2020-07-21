@@ -1,0 +1,14 @@
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+        int[] ans = new int[T.length];
+        Stack<Pair<Integer, Integer>> stack = new Stack<>();
+        for (int i = 0; i < T.length; i++) {
+            while (!stack.isEmpty() && stack.peek().getValue() < T[i]) {
+                Pair<Integer, Integer> p = stack.pop();
+                ans[p.getKey()] = i - p.getKey();
+            }
+            stack.push(new Pair(i, T[i]));
+        }
+        return ans;
+    }
+}
