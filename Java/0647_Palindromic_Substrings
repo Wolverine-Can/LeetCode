@@ -1,0 +1,22 @@
+class Solution {
+    public int countSubstrings(String s) {
+        int ans = 0;
+        for (int mid1 = 0; mid1 < s.length(); mid1++) {
+            int left = mid1, right = mid1;
+            while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+                ans += 1;
+                left -= 1;
+                right += 1;
+            }
+        }
+        for (int mid2 = 0; mid2 < s.length(); mid2++) {
+            int left = mid2, right = mid2 + 1;
+            while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+                ans += 1;
+                left -= 1;
+                right += 1;
+            }
+        }
+        return ans;
+    }
+}
