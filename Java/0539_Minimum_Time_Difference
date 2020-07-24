@@ -1,0 +1,18 @@
+class Solution {
+    private int getDiff(String a, String b) {
+        int timeA = 60 * (a.charAt(0) * 10 + a.charAt(1)) + (a.charAt(3) * 10 + a.charAt(4));
+        int timeB = 60 * (b.charAt(0) * 10 + b.charAt(1)) + (b.charAt(3) * 10 + b.charAt(4));
+        return timeA - timeB;
+        
+    }
+    
+    public int findMinDifference(List<String> timePoints) {
+        int max = 24 * 60, ans = Integer.MAX_VALUE;
+        Collections.sort(timePoints, (a, b) -> a.compareTo(b));
+        for (int i = 1; i < timePoints.size(); i++) {
+            ans = Math.min(ans, getDiff(timePoints.get(i),timePoints.get(i - 1)));
+        }
+        ans = Math.min(ans, max - getDiff(timePoints.get(timePoints.size() - 1),timePoints.get(0)));
+        return ans;
+    }
+}
