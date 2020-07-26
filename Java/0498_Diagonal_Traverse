@@ -1,0 +1,41 @@
+class Solution {
+    private boolean inBound(int[][] matrix, int m, int n) {
+        int row = matrix.length, col = matrix[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    public int[] findDiagonalOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return new int[0];
+        }
+        int row = matrix.length, col = matrix[0].length;
+        int[] ans = new int[row * col];
+        int index = 0, dir = 1;
+        int[] dm = {1, -1};
+        int[] dn = {-1, 1};
+        int m = 0, n = 0;
+        while (index < ans.length) {
+            ans[index] = matrix[m][n];
+            index += 1;
+            if (inBound(matrix, m + dm[dir], n + dn[dir])) {
+                m += dm[dir];
+                n += dn[dir];
+            } else if (dir == 1) {
+                if (inBound(matrix, m , n + 1)) {
+                    n += 1;
+                } else {
+                    m += 1;
+                }
+                dir = 1 - dir;
+            } else {
+                if (inBound(matrix, m + 1 , n)) {
+                    m += 1;
+                } else {
+                    n += 1;
+                }
+                dir = 1 - dir;
+            }
+        }
+        return ans;
+    }
+}
