@@ -1,0 +1,47 @@
+class Solution {
+    public List<Integer> minAvailableDuration(int[][] slots1, int[][] slots2, int duration) {
+        Arrays.sort(slots1, (a, b) -> a[0] - b[0]);
+        Arrays.sort(slots2, (a, b) -> a[0] - b[0]);
+        int overlap = 0;
+        int index1 = 0, startOrEnd1 = 0;
+        int index2 = 0, startOrEnd2 = 0;
+        int startTime = 0;
+        while (index1 < slots1.length && index2 < slots2.length) {
+            boolean end = false;
+            int currentTime = -1;
+            if (slots1[index1][startOrEnd1] < slots2[index2][startOrEnd2]) {
+                currentTime = slots1[index1][startOrEnd1];
+                if (startOrEnd1 == 0) {
+                    startOrEnd1 = 1;
+                    overlap += 1;
+                } else{
+                    end = true;
+                    startOrEnd1 = 0;
+                    index1 += 1;
+                    overlap -= 1;
+                }
+            } else {
+                currentTime = slots2[index2][startOrEnd2];
+                if (startOrEnd2 == 0) {
+                    startOrEnd2 = 1;
+                    overlap += 1;
+                } else {
+                    end = true;
+                    startOrEnd2 = 0;
+                    index2 += 1;
+                    overlap -= 1;
+                }
+            }
+            if (overlap == 2) {
+                startTime = currentTime;
+            }
+            if (overlap == 1 && end && currentTime - startTime >= duration) {
+                List<Integer> ans = new ArrayList<>();
+                ans.add(startTime);
+                ans.add(startTime + duration);
+                return ans;
+            }
+        }
+        return new ArrayList<>();
+    }
+}
