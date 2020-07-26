@@ -2,35 +2,22 @@ class Solution {
     public List<Integer> minAvailableDuration(int[][] slots1, int[][] slots2, int duration) {
         Arrays.sort(slots1, (a, b) -> a[0] - b[0]);
         Arrays.sort(slots2, (a, b) -> a[0] - b[0]);
-        int overlap = 0;
-        int index1 = 0, startOrEnd1 = 0;
-        int index2 = 0, startOrEnd2 = 0;
-        int startTime = 0;
-        while (index1 < slots1.length && index2 < slots2.length) {
+        int overlap = 0, i1 = 0, i2 =0, startTime = 0;
+        while (i1 < 2 * slots1.length && i2 < 2 * slots2.length) {
             boolean end = false;
             int currentTime = -1;
+            int index1 = i1 / 2, startOrEnd1 = i1 % 2;
+            int index2 = i2 / 2, startOrEnd2 = i2 % 2;
             if (slots1[index1][startOrEnd1] < slots2[index2][startOrEnd2]) {
                 currentTime = slots1[index1][startOrEnd1];
-                if (startOrEnd1 == 0) {
-                    startOrEnd1 = 1;
-                    overlap += 1;
-                } else{
-                    end = true;
-                    startOrEnd1 = 0;
-                    index1 += 1;
-                    overlap -= 1;
-                }
+                overlap += startOrEnd1 == 0? 1 : -1;
+                end = startOrEnd1 == 0? false : true;
+                i1 += 1;
             } else {
                 currentTime = slots2[index2][startOrEnd2];
-                if (startOrEnd2 == 0) {
-                    startOrEnd2 = 1;
-                    overlap += 1;
-                } else {
-                    end = true;
-                    startOrEnd2 = 0;
-                    index2 += 1;
-                    overlap -= 1;
-                }
+                overlap += startOrEnd2 == 0? 1 : -1;
+                end = startOrEnd2 == 0? false : true;
+                i2 += 1;
             }
             if (overlap == 2) {
                 startTime = currentTime;
