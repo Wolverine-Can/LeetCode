@@ -1,0 +1,46 @@
+class Solution {
+    private class UnionFind{
+        private int[] parent;
+        private int unionCount;
+        private UnionFind(int n) {
+            parent = new int[n];
+            Arrays.fill(parent, -1);
+            unionCount = n;
+        }
+        private int find(int x) {
+            int head = x, px;
+            while (parent[head] >= 0) {
+                head = parent[head];
+            }
+            while (x != head) {
+                px = parent[x];
+                parent[x] = head;
+                x = px;
+            }
+            return head;
+        }
+        private void union(int x, int y) {
+            int hx = find(x);
+            int hy = find(y);
+            if (hx != hy) {
+                parent[hx] = hy;
+                unionCount -= 1;
+            }
+        }
+        private int unionNumber() {
+            return unionCount;
+        }
+    }
+    public int findCircleNum(int[][] M) {
+        int N = M.length;
+        UnionFind UF = new UnionFind(N);
+        for (int m = 0; m < N - 1; m++) {
+            for (int n = m + 1; n < N; n++) {
+                if (M[m][n] == 1) {
+                    UF.union(m, n);
+                }
+            }
+        }
+        return UF.unionNumber();
+    }
+}
