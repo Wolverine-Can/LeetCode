@@ -1,0 +1,49 @@
+class Node {
+    Node left;
+    Node right;
+    int val;
+    int smallerCount;
+    Node (int val) {
+        this.val = val;
+        this.smallerCount = 0;
+    }
+}
+class Solution {
+    private int insertBST(Node root, int val) {
+        Node node = root, toInsert = new Node(val);
+        int smaller = 0;
+        while (true) {
+            if (val < node.val) {
+                node.smallerCount += 1;
+                if (node.left != null) {
+                    node = node.left;
+                } else {
+                    node.left = toInsert;
+                    break;
+                }
+            } else {
+                smaller += node.val == toInsert.val ? node.smallerCount : node.smallerCount + 1;
+                if (node.right != null) {
+                    node = node.right;
+                } else {
+                    node.right = toInsert;
+                    break;
+                }
+            }
+        }
+        return smaller;
+    }
+    
+    public List<Integer> countSmaller(int[] nums) {
+        LinkedList<Integer> ans = new LinkedList<>();
+        if (nums == null || nums.length == 0) {
+            return ans;
+        }
+        Node root = new Node(nums[nums.length - 1]);
+        ans.addFirst(0);
+        for (int i = nums.length - 2; i >= 0; i--) {
+            ans.addFirst(insertBST(root, nums[i]));
+        }
+        return ans;
+    }
+}
