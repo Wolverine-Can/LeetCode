@@ -1,0 +1,28 @@
+class Solution {
+    private int length(Pair<Integer,Integer> v) {
+        return v.getKey() * v.getKey() + v.getValue() * v.getValue();
+    }
+    
+    private boolean isVertical (Pair<Integer, Integer> v1, Pair<Integer, Integer> v2) {
+        if (length(v1) != length(v2) || length(v1) == 0) {
+            return false;
+        }
+        return v1.getKey() * v2.getKey() + v1.getValue() * v2.getValue() == 0;
+    }
+    
+    private boolean isSquare(Pair<Integer, Integer> v1, Pair<Integer, Integer> v2, Pair<Integer, Integer> v3) {
+        return v1.getKey() == v2.getKey() + v3.getKey() && v1.getValue() == v2.getValue() + v3.getValue();
+    }
+    
+    public boolean validSquare(int[] p1, int[] p2, int[] p3, int[] p4) {
+        Pair<Integer, Integer> v1 = new Pair(p2[0] - p1[0], p2[1] - p1[1]);
+        Pair<Integer, Integer> v2 = new Pair(p3[0] - p1[0], p3[1] - p1[1]);
+        Pair<Integer, Integer> v3 = new Pair(p4[0] - p1[0], p4[1] - p1[1]);
+        if (isVertical(v1, v2) && isSquare(v3, v1, v2)
+           || isVertical(v2, v3) && isSquare(v1, v2, v3)
+           || isVertical(v1, v3) && isSquare(v2, v1, v3)) {
+            return true;
+        }
+        return false;
+    }
+}
