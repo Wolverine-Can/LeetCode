@@ -1,0 +1,62 @@
+class Solution {
+    private boolean inBound(int[][] matrix, int m, int n) {
+        int row = matrix.length, col = matrix[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    private void markByBFS(int[][] matrix, boolean[][] ocean) {
+        int row = matrix.length, col = matrix[0].length;
+        Queue<Pair<Integer, Integer>> queue = new LinkedList<>();
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                if (ocean[m][n]) {
+                    queue.offer(new Pair(m, n));
+                }
+            }
+        }
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        while (!queue.isEmpty()) {
+            Pair<Integer, Integer> coordinate = queue.poll();
+            int m = coordinate.getKey();
+            int n = coordinate.getValue();
+            for (int i = 0; i < 4; i++) {
+                int nm = m + dm[i];
+                int nn = n + dn[i];
+                if (inBound(matrix, nm, nn) && matrix[nm][nn] >= matrix[m][n] && !ocean[nm][nn]) {
+                    ocean[nm][nn] = true;
+                    queue.offer(new Pair(nm, nn));
+                }
+            }
+        }
+    }
+    
+    public List<List<Integer>> pacificAtlantic(int[][] matrix) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return ans;
+        }
+        int row = matrix.length, col = matrix[0].length;
+        boolean[][] pacific = new boolean[row][col];
+        boolean[][] atlantic = new boolean[row][col];
+        Arrays.fill(pacific[0], true);
+        Arrays.fill(atlantic[row - 1], true);
+        for (int m = 0; m < row; m++) {
+            pacific[m][0] = true;
+            atlantic[m][col - 1] = true;
+        }
+        markByBFS(matrix, pacific);
+        markByBFS(matrix, atlantic);
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                if (pacific[m][n] && atlantic[m][n]) {
+                    List<Integer> both = new ArrayList<>();
+                    both.add(m);
+                    both.add(n);
+                    ans.add(both);
+                }
+            }
+        }
+        return ans;
+    }
+}
