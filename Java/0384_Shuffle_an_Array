@@ -1,0 +1,40 @@
+class Solution {
+    int[] orig;
+    int length;
+    public Solution(int[] nums) {
+        orig = nums;
+        length = nums.length;
+    }
+    
+    /** Resets the array to its original configuration and return it. */
+    public int[] reset() {
+        return orig;
+    }
+    
+    private void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+    
+    /** Returns a random shuffling of the array. */
+    public int[] shuffle() {
+        int[] origin = new int[length];
+        System.arraycopy(orig, 0, origin, 0, length);
+        int[] shuffled = new int[length];
+        Random rd = new Random();
+        for (int i = length - 1; i >= 0; i--) {
+            int randIndex = rd.nextInt(i + 1);
+            shuffled[i] = origin[randIndex];
+            swap(origin, randIndex, i);
+        }
+        return shuffled;
+    }
+}
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(nums);
+ * int[] param_1 = obj.reset();
+ * int[] param_2 = obj.shuffle();
+ */
