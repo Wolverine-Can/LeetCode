@@ -1,0 +1,36 @@
+class Solution {
+    private boolean inBound(int[][] rooms, int m, int n) {
+        int row = rooms.length, col = rooms[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    public void wallsAndGates(int[][] rooms) {
+         if (rooms == null || rooms.length == 0 || rooms[0].length == 0) {
+            return;
+        }
+        int row = rooms.length, col = rooms[0].length;
+        Queue<Pair<Integer, Integer>> queue = new LinkedList<>();
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                if (rooms[m][n] == 0) {
+                    queue.offer(new Pair(m, n));
+                }
+            }
+        }
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        while (!queue.isEmpty()) {
+            Pair<Integer, Integer> loc = queue.poll();
+            int m = loc.getKey();
+            int n = loc.getValue();
+            for (int i = 0; i < 4; i++) {
+                int nm = m + dm[i];
+                int nn = n + dn[i];
+                if (inBound(rooms, nm, nn) && rooms[nm][nn] == Integer.MAX_VALUE) {
+                    rooms[nm][nn] = rooms[m][n] + 1;
+                    queue.offer(new Pair(nm, nn));
+                }
+            }
+        }
+    }
+}
