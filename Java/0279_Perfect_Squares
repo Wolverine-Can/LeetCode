@@ -1,0 +1,13 @@
+class Solution {
+    public int numSquares(int n) {
+        int[] squareN = new int[n + 1];
+        Arrays.fill(squareN, Integer.MAX_VALUE - 1);
+        squareN[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; i - j * j >= 0; j++) {
+                squareN[i] = Math.min(squareN[i], squareN[i - j * j] + 1);
+            }
+        }
+        return squareN[n];
+    }
+}
