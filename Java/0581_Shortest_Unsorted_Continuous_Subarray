@@ -1,0 +1,29 @@
+class Solution {
+    public int findUnsortedSubarray(int[] nums) {
+        int firstTurn = 1, min = Integer.MAX_VALUE;
+        int lastTurn = nums.length - 2, max = Integer.MIN_VALUE;
+        int startIndex = 0, endIndex = nums.length - 1;
+        
+        while (firstTurn < nums.length && nums[firstTurn] > nums[firstTurn - 1]) {
+            firstTurn += 1;
+        }
+        for (int i = firstTurn; i < nums.length; i++) {
+            min = Math.min(min, nums[i]);
+        }
+        while (startIndex <= endIndex && nums[startIndex] <= min) {
+            startIndex += 1;
+        }
+        
+        
+        while (lastTurn >= firstTurn && nums[lastTurn] < nums[lastTurn + 1]) {
+            lastTurn -= 1;
+        }
+        for (int i = lastTurn; i >= 0; i--) {
+            max = Math.max(max, nums[i]);
+        }
+        while (startIndex <= endIndex && nums[endIndex] >= max) {
+            endIndex -= 1;
+        }
+        return endIndex - startIndex + 1;
+    }
+}
