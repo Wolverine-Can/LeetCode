@@ -1,0 +1,70 @@
+class Solution {
+    boolean solved;
+    private Pair<Integer, Integer> next(char[][] board, int m, int n) {
+        while (m < 9) {
+            while (n < 9) {
+                if (board[m][n] == '.') {
+                    return new Pair(m, n);
+                }
+                n += 1;
+            }
+            m += 1;
+            n = 0;
+        }
+        return null;
+    }
+    
+    private void dfs(char[][] board, List<Set<Character>> rows, List<Set<Character>> cols, List<Set<Character>> blocks, int m, int n) {
+        if (solved) {
+            return;
+        }
+        for (int i = 0; i < 9; i++) {
+            char fill = (char)('1' + i);
+            if (rows.get(m).contains(fill) || cols.get(n).contains(fill) || blocks.get((m / 3) * 3 + n / 3).contains(fill)) {
+                continue;
+            }
+            board[m][n] = fill;
+            rows.get(m).add(fill);
+            cols.get(n).add(fill);
+            blocks.get((m / 3) * 3 + n / 3).add(fill);
+            Pair<Integer, Integer> nextToFill = next(board, m, n);
+            if (nextToFill == null) {
+                solved = true;
+                return;
+            }
+            dfs(board, rows, cols, blocks, nextToFill.getKey(), nextToFill.getValue());
+            if (solved) {
+                break;
+            }
+            board[m][n] = '.';
+            rows.get(m).remove(fill);
+            cols.get(n).remove(fill);
+            blocks.get((m / 3) * 3 + n / 3).remove(fill);
+        }
+    }
+    
+    public void solveSudoku(char[][] board) {
+        List<Set<Character>> rows = new ArrayList<>();
+        List<Set<Character>> cols = new ArrayList<>();
+        List<Set<Character>> blocks = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            rows.add(new HashSet<>());
+            cols.add(new HashSet<>());
+            blocks.add(new HashSet<>());
+        }
+        for (int m = 0; m < 9; m++) {
+            for (int n = 0; n < 9; n++) {
+                char num = board[m][n];
+                if (num == '.') {
+                    continue;
+                }
+                rows.get(m).add(num);
+                cols.get(n).add(num);
+                blocks.get((m / 3) * 3 + n / 3).add(num);
+            }
+        }
+        solved = false;
+        Pair<Integer, Integer> nextToFill = next(board, 0, 0);
+        dfs(board, rows, cols, blocks, nextToFill.getKey(), nextToFill.getValue());
+    }
+}
