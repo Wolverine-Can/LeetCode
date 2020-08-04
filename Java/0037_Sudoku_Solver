@@ -14,19 +14,19 @@ class Solution {
         return null;
     }
     
-    private void dfs(char[][] board, List<Set<Character>> rows, List<Set<Character>> cols, List<Set<Character>> blocks, int m, int n) {
+    private void dfs(char[][] board, boolean[][] rows, boolean[][] cols, boolean[][] blocks, int m, int n) {
         if (solved) {
             return;
         }
         for (int i = 0; i < 9; i++) {
             char fill = (char)('1' + i);
-            if (rows.get(m).contains(fill) || cols.get(n).contains(fill) || blocks.get((m / 3) * 3 + n / 3).contains(fill)) {
+            if (rows[m][i] || cols[n][i] || blocks[(m / 3) * 3 + n / 3][i]) {
                 continue;
             }
             board[m][n] = fill;
-            rows.get(m).add(fill);
-            cols.get(n).add(fill);
-            blocks.get((m / 3) * 3 + n / 3).add(fill);
+            rows[m][i] = true;
+            cols[n][i] = true;
+            blocks[m / 3 * 3 + n / 3][i] = true;
             Pair<Integer, Integer> nextToFill = next(board, m, n);
             if (nextToFill == null) {
                 solved = true;
@@ -37,30 +37,25 @@ class Solution {
                 break;
             }
             board[m][n] = '.';
-            rows.get(m).remove(fill);
-            cols.get(n).remove(fill);
-            blocks.get((m / 3) * 3 + n / 3).remove(fill);
+            rows[m][i] = false;
+            cols[n][i] = false;
+            blocks[m / 3 * 3 + n / 3][i] = false;
         }
     }
     
     public void solveSudoku(char[][] board) {
-        List<Set<Character>> rows = new ArrayList<>();
-        List<Set<Character>> cols = new ArrayList<>();
-        List<Set<Character>> blocks = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            rows.add(new HashSet<>());
-            cols.add(new HashSet<>());
-            blocks.add(new HashSet<>());
-        }
+        boolean[][] rows = new boolean[9][9];
+        boolean[][] cols = new boolean[9][9];
+        boolean[][] blocks = new boolean[9][9];
         for (int m = 0; m < 9; m++) {
             for (int n = 0; n < 9; n++) {
-                char num = board[m][n];
-                if (num == '.') {
+                if (board[m][n] == '.') {
                     continue;
                 }
-                rows.get(m).add(num);
-                cols.get(n).add(num);
-                blocks.get((m / 3) * 3 + n / 3).add(num);
+                int num = board[m][n] - '1';
+                rows[m][num] = true;
+                cols[n][num] = true;
+                blocks[m / 3 * 3 + n / 3][num] = true;
             }
         }
         solved = false;
