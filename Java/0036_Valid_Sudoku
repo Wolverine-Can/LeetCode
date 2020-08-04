@@ -1,43 +1,25 @@
 class Solution {
     public boolean isValidSudoku(char[][] board) {
+        List<Set<Character>> rows = new ArrayList<>();
+        List<Set<Character>> cols = new ArrayList<>();
+        List<Set<Character>> blocks = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            rows.add(new HashSet<>());
+            cols.add(new HashSet<>());
+            blocks.add(new HashSet<>());
+        }
         for (int m = 0; m < 9; m++) {
-            Set<Character> appeared = new HashSet<>();
             for (int n = 0; n < 9; n++) {
-                if (board[m][n] == '.') {
+                char ch = board[m][n];
+                if (ch == '.') {
                     continue;
                 }
-                if (appeared.contains(board[m][n])) {
+                if (rows.get(m).contains(ch) || cols.get(n).contains(ch) || blocks.get((m / 3) * 3 + n / 3).contains(ch)) {
                     return false;
                 }
-                appeared.add(board[m][n]);
-            }
-        }
-        for (int n = 0; n < 9; n++) {
-            Set<Character> appeared = new HashSet<>();
-            for (int m = 0; m < 9; m++) {
-                if (board[m][n] == '.') {
-                    continue;
-                }
-                if (appeared.contains(board[m][n])) {
-                    return false;
-                }
-                appeared.add(board[m][n]);
-            }
-        }
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                Set<Character> appeared = new HashSet<>();
-                for (int m = 3 * i; m < 3 + 3 * i; m++) {
-                    for (int n = 3 * j; n < 3 + 3 * j; n++) {
-                        if (board[m][n] == '.') {
-                        continue;
-                    }
-                    if (appeared.contains(board[m][n])) {
-                        return false;
-                    }
-                    appeared.add(board[m][n]);
-                    }
-                }
+                rows.get(m).add(ch);
+                cols.get(n).add(ch);
+                blocks.get((m / 3) * 3 + n / 3).add(ch);
             }
         }
         return true;
