@@ -1,0 +1,45 @@
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        for (int m = 0; m < 9; m++) {
+            Set<Character> appeared = new HashSet<>();
+            for (int n = 0; n < 9; n++) {
+                if (board[m][n] == '.') {
+                    continue;
+                }
+                if (appeared.contains(board[m][n])) {
+                    return false;
+                }
+                appeared.add(board[m][n]);
+            }
+        }
+        for (int n = 0; n < 9; n++) {
+            Set<Character> appeared = new HashSet<>();
+            for (int m = 0; m < 9; m++) {
+                if (board[m][n] == '.') {
+                    continue;
+                }
+                if (appeared.contains(board[m][n])) {
+                    return false;
+                }
+                appeared.add(board[m][n]);
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                Set<Character> appeared = new HashSet<>();
+                for (int m = 3 * i; m < 3 + 3 * i; m++) {
+                    for (int n = 3 * j; n < 3 + 3 * j; n++) {
+                        if (board[m][n] == '.') {
+                        continue;
+                    }
+                    if (appeared.contains(board[m][n])) {
+                        return false;
+                    }
+                    appeared.add(board[m][n]);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}
