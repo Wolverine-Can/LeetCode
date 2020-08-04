@@ -1,0 +1,64 @@
+class Solution {
+    private boolean inBound(int[][] grid, int m, int n) {
+        int row = grid.length, col = grid[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    public int shortestBridge(int[][] grid) {
+        int row = grid.length, col = grid[0].length;
+        Queue<Pair<Integer, Integer>> firstIsland = new LinkedList<>();
+        boolean[][] visited = new boolean[row][col];
+        boolean foundIsland = false;
+        for (int m = 0; m < row && !foundIsland; m++) {
+            for (int n = 0; n < col; n++) {
+                if (grid[m][n] == 1) {
+                    firstIsland.offer(new Pair(m, n));
+                    visited[m][n] = true;
+                    foundIsland = true;
+                    break;
+                }
+            }
+        }
+        Queue<Pair<Integer, Integer>> queue = new LinkedList<>();
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        while (!firstIsland.isEmpty()) {
+            Pair<Integer, Integer> coordinate = firstIsland.poll();
+            queue.offer(coordinate);
+            int m = coordinate.getKey();
+            int n = coordinate.getValue();
+            for (int i = 0; i < 4; i++) {
+                int nm = m + dm[i];
+                int nn = n + dn[i];
+                if (inBound(grid, nm, nn) && grid[nm][nn] == 1 && !visited[nm][nn]) {
+                    firstIsland.offer(new Pair(nm, nn));
+                    visited[nm][nn] = true;
+                }
+            }
+        }
+        boolean Found = false;
+        int layer = 0;
+        while (!Found) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Pair<Integer, Integer> coordinate = queue.poll();
+                int m = coordinate.getKey();
+                int n = coordinate.getValue();
+                for (int j = 0; j < 4; j++) {
+                    int nm = m + dm[j];
+                    int nn = n + dn[j];
+                    if (inBound(grid, nm, nn) && !visited[nm][nn] && grid[nm][nn] == 1) {
+                        Found = true;
+                    }
+                    if (inBound(grid, nm, nn) && !visited[nm][nn] && grid[nm][nn] == 0) {
+                        grid[nm][nn] = 1;
+                        queue.offer(new Pair(nm, nn));
+                        visited[nm][nn] = true;
+                    }
+                }
+            }
+            layer += 1;
+        }
+        return layer - 1;
+    }
+}
