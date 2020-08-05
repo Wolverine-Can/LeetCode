@@ -1,0 +1,12 @@
+class Solution {
+    public int numPairsDivisibleBy60(int[] time) {
+        int ans = 0;
+        int[] freq = new int[60];
+        for (int i = 0; i < time.length; i++) {
+            int seconds = time[i] % 60;
+            ans += freq[(60 - seconds) % 60];
+            freq[time[i] % 60] += 1;
+        }
+        return ans;
+    }
+}
