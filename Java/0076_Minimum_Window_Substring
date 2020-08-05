@@ -1,0 +1,40 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        Pair<Integer, Integer> ans = new Pair(0, Integer.MAX_VALUE);
+        Set<Character> toContain = new HashSet<>();
+        Map<Character, Integer> freq = new HashMap<>();
+        Map<Character, Integer> target = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            target.put(c, target.getOrDefault(c, 0) + 1);
+            toContain.add(c);
+        }
+        int left = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char add = s.charAt(right);
+            if (!target.containsKey(add)) {
+                continue;
+            }
+            freq.put(add, freq.getOrDefault(add, 0) + 1);
+            
+            if (freq.get(add).equals(target.get(add))) {
+                toContain.remove(add);
+            }
+            while (toContain.isEmpty()) {
+                if (right - left < ans.getValue() - ans.getKey()) {
+                    ans = new Pair(left, right);
+                }
+                char sub = s.charAt(left);
+                left += 1;
+                if (!target.containsKey(sub)) {
+                    continue;
+                }
+                if (freq.get(sub).equals(target.get(sub))) {
+                    toContain.add(sub);
+                }
+                freq.put(sub, freq.get(sub) - 1);
+            }
+        }
+        return ans.getValue() == Integer.MAX_VALUE ? "" : s.substring(ans.getKey(), ans.getValue() + 1);
+    }
+}
