@@ -1,0 +1,22 @@
+class Solution {
+    private int dp(int[] nums, int index, int S, Map<Integer, Map<Integer, Integer>> memo) {
+        if (memo.get(index).containsKey(S)) {
+            return memo.get(index).get(S);
+        }
+        if (index < 0) {
+            return 0;
+        }
+        int ans = dp(nums, index - 1, S + nums[index], memo) + dp(nums, index - 1, S - nums[index], memo);
+        memo.get(index).put(S, ans);
+        return ans;
+    }
+    
+    public int findTargetSumWays(int[] nums, int S) {
+        Map<Integer, Map<Integer, Integer>> memo = new HashMap<>();
+        for (int i = -1; i < nums.length; i++) {
+            memo.put(i, new HashMap<>());
+        }
+        memo.get(-1).put(0, 1);
+        return dp(nums, nums.length - 1, S, memo);
+    }
+}
