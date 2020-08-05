@@ -1,0 +1,31 @@
+class Solution {
+    private int needDays(int[] weights, int capacity) {
+        int days = 1, index = 0;
+        int available = capacity;
+        while (index < weights.length) {
+            if (weights[index] > capacity) {
+                return Integer.MAX_VALUE;
+            }
+            if (available >= weights[index]) {
+                available -= weights[index];
+                index += 1;
+            } else {
+                days += 1;
+                available = capacity;
+            }
+        }
+        return days;
+    }
+    public int shipWithinDays(int[] weights, int D) {
+        int low = 1, high = 50000 * 500;
+        while (low + 1 < high) {
+            int mid = (low + high) / 2;
+            if (needDays(weights, mid) <= D) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+        return needDays(weights, low) == D ? low : high;
+    }
+}
