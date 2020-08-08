@@ -1,0 +1,79 @@
+// Recursion
+public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+    if (t1 == null) {
+        return t2;
+    }
+    if (t2 == null) {
+        return t1;
+    }
+    TreeNode root = new TreeNode(t1.val + t2.val);
+    root.left = mergeTrees(t1.left, t2.left);
+    root.right = mergeTrees(t1.right, t2.right);
+    return root;
+}
+
+// Iteration
+class stackItems{
+    TreeNode tree1;
+    TreeNode tree2;
+    TreeNode returnVal;
+    stackItems(TreeNode tree1, TreeNode tree2, TreeNode returnVal) {
+        this.tree1 = tree1;
+        this.tree2 = tree2;
+        this.returnVal = returnVal;
+    }
+}
+
+class stackInfo{
+    stackItems curr;
+    stackItems last;
+    int state;
+    stackInfo(stackItems curr, stackItems last, int state) {
+        this.curr = curr;
+        this.last = last;
+        this.state = state;
+    }
+}
+
+public TreeNode mergeTrees(TreeNode tree1, TreeNode tree2) {
+    int ENTER = 1, EXIT1 = 2, EXIT2 = 3, EXIT3 = 4;
+    Stack<stackInfo> stack = new Stack<>();
+    stackItems ans = new stackItems(tree1, tree2, null);
+    stack.push(new stackInfo(ans, null, ENTER));
+    while (!stack.isEmpty()) {
+        stackInfo si = stack.pop();
+        int state = si.state;
+        stackItems curr = si.curr;
+        TreeNode t1 = curr.tree1;
+        TreeNode t2 = curr.tree2;
+        stackItems last = si.last;
+        if (t1 == null) {
+            curr.returnVal = t2;
+            continue;
+        }
+        if (t2 == null) {
+            curr.returnVal = t1;
+            continue;
+        }
+        stackItems lastLeft = new stackItems(t1.left, t2.left, null);
+        stackItems lastRight = new stackItems(t1.right, t2.right, null);
+        if (state == ENTER) {
+            stack.push(new stackInfo(curr, lastRight, EXIT3));
+            stack.push(new stackInfo(lastRight, null, ENTER));
+            stack.push(new stackInfo(curr, lastLeft, EXIT2));
+            stack.push(new stackInfo(lastLeft, null, ENTER));
+            stack.push(new stackInfo(curr, null, EXIT1));
+        }
+        if (state == EXIT1) {
+            curr.returnVal = new TreeNode(t1.val + t2.val);
+        }
+        if (state == EXIT2) {
+            curr.returnVal.left = last.returnVal;
+        }
+        if (state == EXIT3) {
+            curr.returnVal.right = last.returnVal;
+        }
+    }
+    return ans.returnVal;
+}
+
