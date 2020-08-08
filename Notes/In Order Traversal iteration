@@ -1,0 +1,22 @@
+public List<Integer> inorderTraversal(TreeNode root) {
+    int ENTER = 1, EXIT = 2;
+    List<Integer> res = new ArrayList<>();
+    Stack <Pair<TreeNode, Integer>> stack = new Stack<>();
+    stack.push(new Pair(root, ENTER));
+    while (!stack.isEmpty()) {
+        Pair<TreeNode, Integer> p = stack.pop();
+        TreeNode node = p.getKey();
+        int state = p.getValue();
+        if (node == null) {
+            continue;
+        }
+        if (state == ENTER) {
+            stack.push(new Pair(node.right, ENTER));
+            stack.push(new Pair(node, EXIT));
+            stack.push(new Pair(node.left, ENTER));
+        } else{
+            res.add(node.val);
+        }
+    }
+    return res;
+}
