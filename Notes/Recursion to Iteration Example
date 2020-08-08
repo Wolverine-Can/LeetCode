@@ -1,0 +1,59 @@
+class rv{
+    int val;
+}
+class stackInfo{
+    int x;
+    int state;
+    rv returnVal;
+    stackInfo(int x, int state, rv returnVal) {
+        this.x = x;
+        this.state = state;
+        this.returnVal = returnVal;
+    }
+    stackInfo(){}
+}
+
+int recursion(int x) {
+    if (x == 0) {
+        return 0;
+    }
+    return recursion(x - 1) + 1;
+}
+
+int iteration(int xx) {
+    int ENTER = 1, EXIT = 2;
+    int[] map = new int[11];
+    rv ans = new rv();
+    Stack<Pair<stackInfo, stackInfo>> stack = new Stack<>();
+    stack.push(new Pair(new stackInfo(xx, ENTER, ans), new stackInfo()));
+    while (!stack.isEmpty()) {
+        Pair<stackInfo, stackInfo> p = stack.pop();
+        stackInfo si = p.getKey();
+        stackInfo last = p.getValue();
+        int x = si.x;
+        int state = si.state;
+        rv returnVal = si.returnVal;
+        if (x == 0) {
+            returnVal.val = 0;
+            continue;
+        }
+        if (state == ENTER) {
+            last.x = x - 1;
+            last.state = ENTER;
+            last.returnVal = new rv();
+            stack.push(new Pair(new stackInfo(x, EXIT, returnVal), last));
+            stack.push(new Pair(last, new stackInfo())); 
+        } else {
+            returnVal.val = last.returnVal.val + 1;
+        }
+    }
+    return ans.val;
+}
+
+public void recursionAndIteration(int x) {
+    int a = recursion(x);
+    int b = iteration(x);
+    System.out.println(a);
+    System.out.println(b);
+}
+
