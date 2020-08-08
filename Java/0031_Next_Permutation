@@ -1,0 +1,31 @@
+class Solution {
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    private void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            swap(nums, start++, end--);
+        }
+    }
+    public void nextPermutation(int[] nums) {
+        if (nums.length == 0) {
+            return;
+        }
+        int swapPos1 = -1;
+        for (int i = nums.length - 2; i >= 0; i--) {
+            if (nums[i] < nums[i + 1]) {
+                swapPos1 = i;
+                break;
+            }
+        }
+        int swapPos2 = swapPos1 + 1;
+        while (swapPos1 != -1 && swapPos2 + 1 < nums.length && nums[swapPos2 + 1] > nums[swapPos1]) {
+            swapPos2 += 1;
+        }
+        if (swapPos1 != -1)
+            swap(nums, swapPos1, swapPos2);
+        reverse(nums, swapPos1 + 1, nums.length - 1);
+    }
+}
