@@ -22,7 +22,6 @@ int recursion(int x) {
 
 int iteration(int xx) {
     int ENTER = 1, EXIT = 2;
-    int[] map = new int[11];
     rv ans = new rv();
     Stack<Pair<stackInfo, stackInfo>> stack = new Stack<>();
     stack.push(new Pair(new stackInfo(xx, ENTER, ans), new stackInfo()));
