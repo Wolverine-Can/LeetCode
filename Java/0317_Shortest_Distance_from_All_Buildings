@@ -1,0 +1,76 @@
+class Solution {
+    private boolean inBound(int[][] grid, int m, int n) {
+        int row = grid.length, col = grid[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    private void bfs(int[][] grid, int r, int c, Set<Pair<Integer, Integer>> availPlace) {
+        int row = grid.length, col = grid[0].length;
+        boolean[][] visited = new boolean[row][col];
+        Queue<Pair<Integer, Integer>> queue = new LinkedList<>();
+        queue.offer(new Pair(r, c));
+        visited[r][c] = true;
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int k = 0; k < size; k++) {
+                Pair<Integer, Integer> p = queue.poll();
+                int m = p.getKey();
+                int n = p.getValue();
+                if (grid[m][n] != Integer.MIN_VALUE) {
+                    grid[m][n] -= step;
+                }
+                for (int i = 0; i < 4; i++) {
+                    int nm = m + dm[i];
+                    int nn = n + dn[i];
+                    if (inBound(grid, nm, nn) && !visited[nm][nn] && grid[nm][nn] <= 0) {
+                        queue.offer(new Pair(nm, nn));
+                        visited[nm][nn] = true;
+                    }
+                }
+            }
+            step += 1;
+        }
+        for (Pair<Integer, Integer> p : availPlace) {
+            if (!visited[p.getKey()][p.getValue()]) {
+                grid[p.getKey()][p.getValue()] = Integer.MIN_VALUE;
+            }
+        }
+    }
+    
+    public int shortestDistance(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return -1;
+        }
+        int row = grid.length, col = grid[0].length;
+        Set<Pair<Integer, Integer>> availPlace = new HashSet<>();
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                if (grid[m][n] == 0) {
+                    availPlace.add(new Pair(m, n));
+                }
+            }
+        }
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                if (grid[m][n] == 1) {
+                    bfs(grid, m, n, availPlace);
+                }
+            }
+        }
+        int ans = Integer.MAX_VALUE;
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                if (grid[m][n] == Integer.MIN_VALUE) {
+                    continue;
+                }
+                if (grid[m][n] < 0) {
+                    ans = Math.min(ans, -grid[m][n]);
+                }
+            }
+        }
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+}
