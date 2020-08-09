@@ -1,0 +1,33 @@
+class Solution {
+    private int findMax(int[] A, int right) {
+        int ans = 0;
+        for (int i = 0; i <= right; i++) {
+            ans = A[i] > A[ans] ? i : ans;
+        }
+        return ans;
+    }
+    private void swap(int[] A, int left, int right) {
+        int temp = A[left];
+        A[left] = A[right];
+        A[right] = temp;
+    }
+    private void reverse(int[] A, int right) {
+        int left = 0;
+        while (left < right) {
+            swap(A, left++, right--);
+        }
+    }
+    public List<Integer> pancakeSort(int[] A) {
+        List<Integer> ans = new ArrayList<>();
+        for (int right = A.length - 1; right >= 0; right--) {
+            int maxIndex = findMax(A, right);
+            if (maxIndex != right) {
+                reverse(A, maxIndex);
+                reverse(A, right);
+                ans.add(maxIndex + 1);
+                ans.add(right + 1);
+            }
+        }
+        return ans;
+    }
+}
