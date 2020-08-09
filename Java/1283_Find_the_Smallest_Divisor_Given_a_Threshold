@@ -1,0 +1,26 @@
+class Solution {
+    private int sumOfDiv(int[] nums, int div) {
+        int sum = 0;
+        for (int num : nums) {
+            if (num % div == 0) {
+                sum += num / div;
+            } else {
+                sum += num / div + 1;
+            }
+        }
+        return sum;
+    }
+    
+    public int smallestDivisor(int[] nums, int threshold) {
+        int smaller = 1, larger = 1000000;
+        while (smaller + 1 < larger) {
+            int mid = (smaller + larger) / 2;
+            if (sumOfDiv(nums, mid) <= threshold) {
+                larger = mid;
+            } else {
+                smaller = mid;
+            }
+        }
+        return sumOfDiv(nums, smaller) <= threshold ? smaller : larger;
+    }
+}
