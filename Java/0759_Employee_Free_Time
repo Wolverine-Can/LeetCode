@@ -1,0 +1,65 @@
+/*
+// Definition for an Interval.
+class Interval {
+    public int start;
+    public int end;
+
+    public Interval() {}
+
+    public Interval(int _start, int _end) {
+        start = _start;
+        end = _end;
+    }
+};
+*/
+class event{
+    int time;
+    int flag;
+    event(int time, int flag) {
+        this.time = time;
+        this.flag = flag;
+    }
+}
+class Solution {
+    public List<Interval> employeeFreeTime(List<List<Interval>> schedule) {
+        List<Interval> ans = new ArrayList<>();
+        int START = 0, END = 1;
+        int intervalN = 0;
+        for (List<Interval> lst : schedule) {
+            intervalN += lst.size();
+        }
+        event[] events = new event[intervalN * 2];
+        int index = 0;
+        for (List<Interval> lst : schedule) {
+            for (Interval itv : lst) {
+                events[index] = new event(itv.start, START);
+                events[index + 1] = new event(itv.end, END);
+                index += 2;
+            }
+        }
+        Arrays.sort(events, (a, b) -> {
+            if (a.time != b.time) {
+                return a.time - b.time;
+            } else {
+                return a.flag - b.flag;
+            }
+        });
+        int eventCount = 0;
+        int startTime = -1, endTime = 0;
+        for (event evt : events) {
+            if (startTime != -1 && eventCount == 0) {
+                endTime = evt.time;
+                ans.add(new Interval(startTime, endTime));
+            }
+            if (evt.flag == START) {
+                eventCount += 1;
+            } else {
+                eventCount -= 1;
+            }
+            if (eventCount == 0) {
+                startTime = evt.time;
+            }
+        }
+        return ans;
+    }
+}
