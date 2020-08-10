@@ -1,0 +1,108 @@
+class Node{
+    int val;
+    int freq;
+    Node pre;
+    Node next;
+    Node(int val) {
+        this.val = val;
+        this.freq = 0;
+    }
+}
+
+class LFUCache {
+    Map<Integer, Node> keyToNode;
+    Map<Node, Integer> nodeToKey;
+    Map<Integer, Pair<Node, Node>> freqToSentinel;
+    int size;
+    int capacity;
+    int leastFreq;
+    public LFUCache(int capacity) {
+        keyToNode = new HashMap<>();
+        nodeToKey = new HashMap<>();
+        freqToSentinel = new HashMap<>();
+        size = 0;
+        this.capacity = capacity;
+    }
+    
+    public int get(int key) {
+        if (!keyToNode.containsKey(key)) {
+            return -1;
+        }
+        Node n = keyToNode.get(key);
+        remove(n);
+        n.freq += 1;
+        insert(n);
+        return n.val;
+    }
+    
+    public void put(int key, int value) {
+        if (capacity == 0) {
+            return;
+        }
+        if (keyToNode.containsKey(key)) {
+            Node n = keyToNode.get(key);
+            n.val = value;
+            remove(n);
+            n.freq += 1;
+            insert(n);
+        } else {
+            if (size == capacity) {
+                removeLFU();
+            }
+            Node n = new Node(value);
+            keyToNode.put(key, n);
+            nodeToKey.put(n, key);
+            insert(n);
+            size += 1;
+            leastFreq = 0;
+        }
+    }
+    private void remove(Node n) {
+        Node firstSentinel = freqToSentinel.get(n.freq).getKey();
+        Node lastSentinel = freqToSentinel.get(n.freq).getValue();
+        Node pre = n.pre;
+        Node next = n.next;
+        pre.next = next;
+        next.pre = pre;
+        if (firstSentinel.next == lastSentinel) {
+            freqToSentinel.remove(n.freq);
+            if (leastFreq == n.freq) {
+                leastFreq += 1;
+            }
+        }
+    }
+    private void insert(Node n) {
+        if (!freqToSentinel.containsKey(n.freq)) {
+            Node firstSentinel = new Node(0);
+            Node lastSentinel = new Node(0);
+            firstSentinel.next = lastSentinel;
+            lastSentinel.pre = firstSentinel;
+            freqToSentinel.put(n.freq, new Pair(firstSentinel, lastSentinel));
+        }
+        Node firstSentinel = freqToSentinel.get(n.freq).getKey();
+        Node lastSentinel = freqToSentinel.get(n.freq).getValue();
+        Node next = firstSentinel.next;
+        firstSentinel.next = n;
+        n.pre = firstSentinel;
+        n.next = next;
+        next.pre = n;
+    }
+    private void removeLFU() {
+        Node firstSentinel = freqToSentinel.get(leastFreq).getKey();
+        Node lastSentinel = freqToSentinel.get(leastFreq).getValue();
+        Node n = lastSentinel.pre;
+        int key = nodeToKey.get(n);
+        keyToNode.remove(key);
+        nodeToKey.remove(n);
+        remove(n);
+        System.out.println(n.val);
+        size -= 1;
+    }
+}
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
