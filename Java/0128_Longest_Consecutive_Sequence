@@ -1,0 +1,53 @@
+class UnionFind{
+    int[] parent;
+    int largestSetSize;
+    UnionFind(int n) {
+        parent = new int[n];
+        largestSetSize = n == 0 ? 0 : 1;
+        Arrays.fill(parent, -1);
+    }
+    int find(int x) {
+        int head = x;
+        while (parent[head] >= 0) {
+            head = parent[head];
+        }
+        while (x != head) {
+            int px = parent[x];
+            parent[x] = head;
+            x = px;
+        }
+        return head;
+    }
+    void union(int x, int y) {
+        int hx = find(x), hy = find(y);
+        if (hx != hy) {
+            parent[hy] += parent[hx];
+            parent[hx] = hy;
+            largestSetSize = largestSetSize > -parent[hy] ? largestSetSize : -parent[hy];
+        }
+    }
+    int largestSetSize() {
+        return largestSetSize;
+    }
+}
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Map<Integer, Integer> toID = new HashMap<>();
+        UnionFind UF = new UnionFind(nums.length);
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            if (toID.containsKey(num)) {
+                continue;
+            }
+            toID.put(num, i);
+            if (toID.containsKey(num + 1)) {
+                UF.union(i, toID.get(num + 1));
+            }
+            if (toID.containsKey(num - 1)) {
+                UF.union(i, toID.get(num - 1));
+            }
+        }
+        return UF.largestSetSize();
+    }
+}
