@@ -1,0 +1,57 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    boolean largerFound = false;
+    TreeNode larger = null;
+    boolean smallerFound = false;
+    TreeNode smaller = null;
+    private void inorder(TreeNode node) {
+        if (largerFound || node == null) {
+            return;
+        }
+        inorder(node.left);
+        if (larger != null && larger.val > node.val) {
+            largerFound = true;
+        }
+        if (!largerFound) {
+            larger = node;
+        }
+        inorder(node.right);
+    }
+    private void reverseInorder(TreeNode node) {
+        if (smallerFound || node == null) {
+            return;
+        }
+        reverseInorder(node.right);
+        if (smaller != null && smaller.val < node.val) {
+            smallerFound = true;
+        }
+        if (!smallerFound) {
+            smaller = node;
+        }
+        reverseInorder(node.left);
+    }
+    private void swapVal(TreeNode larger, TreeNode smaller) {
+        int temp = larger.val;
+        larger.val = smaller.val;
+        smaller.val = temp;
+    }
+    public void recoverTree(TreeNode root) {
+        inorder(root);
+        reverseInorder(root);
+        swapVal(larger, smaller);
+    }
+}
