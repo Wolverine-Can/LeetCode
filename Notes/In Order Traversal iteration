@@ -1,6 +1,16 @@
-public List<Integer> inorderTraversal(TreeNode root) {
+//Recursion
+public void inorderTraversal(TreeNode root) {
+    if (root == null) {
+        return;
+    }
+    inorderTraversal(root.left);
+    System.out.println(node.val);
+    inorderTraversal(root.right);
+}
+
+//Iteration
+public void inorderTraversal(TreeNode root) {
     int ENTER = 1, EXIT = 2;
-    List<Integer> res = new ArrayList<>();
     Stack <Pair<TreeNode, Integer>> stack = new Stack<>();
     stack.push(new Pair(root, ENTER));
     while (!stack.isEmpty()) {
@@ -15,7 +25,7 @@ public List<Integer> inorderTraversal(TreeNode root) {
             stack.push(new Pair(node, EXIT));
             stack.push(new Pair(node.left, ENTER));
         } else{
-            res.add(node.val);
+            System.out.println(node.val);
         }
     }
     return res;
