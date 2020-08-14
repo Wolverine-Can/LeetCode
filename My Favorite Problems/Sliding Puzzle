@@ -1,0 +1,134 @@
+class Trie{
+    TrieNode root;
+    Trie(){
+        root = new TrieNode();
+    }
+    class TrieNode{
+        TrieNode[] sons;
+        TrieNode() {
+            sons = new TrieNode[6];
+        }
+    }
+    void insert(int[][] board) {
+        TrieNode node = root;
+        for (int m = 0; m < 2; m++) {
+            for (int n = 0; n < 3; n++) {
+                int pos = board[m][n];
+                if (node.sons[pos] == null) {
+                    node.sons[pos] = new TrieNode();
+                }
+                node = node.sons[pos];
+            }
+        }
+    }
+    boolean exist(int[][] board) {
+        TrieNode node = root;
+        for (int m = 0; m < 2; m++) {
+            for (int n = 0; n < 3; n++) {
+                int pos = board[m][n];
+                if (node.sons[pos] == null) {
+                    return false;
+                }
+                node = node.sons[pos];
+            }
+        }
+        return true;
+    }
+}
+
+class Solution {
+    private boolean inBound(int[][] grid, int m, int n) {
+        int row = grid.length, col = grid[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    private boolean solvable(int[][] board) {
+        int[] nums = new int[6];
+        System.arraycopy(board[0], 0, nums, 0, 3);
+        System.arraycopy(board[1], 0, nums, 3, 3);
+        int inversions = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = i + 1; j < 6; j++) {
+                if (nums[i] == 0 || nums[j] == 0) {
+                    continue;
+                }
+                if (nums[j] < nums[i]) {
+                    inversions += 1;
+                }
+            }
+        }
+        return inversions % 2 == 0;
+    }
+    
+    private boolean solved(int[][] board) {
+        int i = 0;
+        while (i < 5) {
+            if (board[i / 3][i % 3] != i + 1) {
+                return false;
+            }
+            i += 1;
+        }
+        return true;
+    }
+    private int[][] arrCopy(int[][] arr) {
+        int[][] copy = new int[arr.length][arr[0].length];
+        for (int i = 0; i < arr.length; i++) {
+            System.arraycopy(arr[i], 0, copy[i], 0, arr[i].length);
+        }
+        return copy;
+    }
+    private Pair<Integer, Integer> findZero(int[][] board) {
+        int pos = 0;
+        while (board[pos / 3][pos % 3] != 0) {
+            pos += 1;
+        }
+        return new Pair(pos / 3, pos % 3);
+    }
+    private void swap(int[][] board, int m1, int n1, int m2, int n2) {
+        int temp = board[m1][n1];
+        board[m1][n1] = board[m2][n2];
+        board[m2][n2] = temp;
+    }
+    private int bfs(int[][] board, Trie trie) {
+        Queue<int[][]> queue = new LinkedList<>();
+        queue.offer(board);
+        trie.insert(board);
+        int step = 0;
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[][] state = queue.poll();
+                if (solved(state)) {
+                    return step;
+                }
+                Pair<Integer, Integer> zeroPos = findZero(state);
+                int m = zeroPos.getKey();
+                int n = zeroPos.getValue();
+                for (int j = 0; j < 4; j++) {
+                    int nm = m + dm[j];
+                    int nn = n + dn[j];
+                    if (inBound(state, nm, nn)) {
+                        swap(state, m, n, nm, nn);
+                        if (!trie.exist(state)) {
+                            int[][] nextState = arrCopy(state);
+                            queue.offer(nextState);
+                            trie.insert(state);
+                        }
+                        swap(state, m, n, nm, nn);
+                    }
+                }
+            }
+            step += 1;
+        }
+        return -1;
+    }
+    public int slidingPuzzle(int[][] board) {
+        if(!solvable(board)) {
+            return -1;
+        }
+        Trie trie = new Trie();
+        return bfs(board, trie);
+    }
+}
