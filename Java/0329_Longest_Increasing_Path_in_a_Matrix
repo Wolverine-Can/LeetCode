@@ -1,0 +1,38 @@
+class Solution {
+    private boolean inBound(int[][] matrix, int m, int n) {
+        int row = matrix.length, col = matrix[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    private int dp(int[][] matrix, int[][] memo, int m, int n) {
+        if (memo[m][n] != 0) {
+            return memo[m][n];
+        }
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        for (int i = 0; i < 4; i++) {
+            int nm = m + dm[i];
+            int nn = n + dn[i];
+            if (inBound(matrix, nm, nn) && matrix[m][n] > matrix[nm][nn]) {
+                memo[m][n] = Math.max(memo[m][n], dp(matrix, memo, nm, nn) + 1);
+            }
+            memo[m][n] = Math.max(memo[m][n], 1);
+        }
+        return memo[m][n];
+    }
+    
+    public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int row = matrix.length, col = matrix[0].length;
+        int[][] memo = new int[row][col];
+        int ans = 0;
+        for (int m = 0; m < row; m++) {
+            for (int n = 0; n < col; n++) {
+                ans = Math.max(ans, dp(matrix, memo, m, n));
+            }
+        }
+        return ans;
+    }
+}
