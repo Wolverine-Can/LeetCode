@@ -1,0 +1,31 @@
+class Solution {
+    private int partitionN (int[] nums, int sum) {
+        int ans = 1, index = 0,subSum = 0;
+        while (index < nums.length) {
+            if(nums[index] > sum) {
+                return Integer.MAX_VALUE;
+            }
+            if (subSum + nums[index] <= sum) {
+                subSum += nums[index];
+            } else {
+                subSum = nums[index];
+                ans += 1;
+            }
+            index += 1;
+        }
+        return ans;
+    }
+    
+    public int splitArray(int[] nums, int m) {
+        int smaller = 0, larger = Integer.MAX_VALUE;
+        while (smaller + 1 < larger) {
+            int mid = smaller + (larger - smaller) / 2;
+            if (partitionN (nums, mid) > m) {
+                smaller = mid;
+            } else {
+                larger = mid;
+            }
+        }
+        return partitionN (nums, smaller) == m ? smaller : larger;
+    }
+}
