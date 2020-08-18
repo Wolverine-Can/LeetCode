@@ -1,0 +1,36 @@
+class Solution {
+    private boolean inBound(int[][] matrix, int m, int n) {
+        int row = matrix.length, col = matrix[0].length;
+        return m >= 0 && m < row && n >=0 && n < col;
+    }
+    
+    private boolean isToeplitz(int[][] matrix, int m, int n) {
+        while (true) {
+            int nm = m + 1, nn = n + 1;
+            if (!inBound(matrix, nm, nn)) {
+                break;
+            }
+            if (matrix[m][n] != matrix[nm][nn]) {
+                return false;
+            }
+            m = nm;
+            n = nn;
+        }
+        return true;
+    }
+    
+    public boolean isToeplitzMatrix(int[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        for (int m = 0; m < row - 1; m++) {
+            if (!isToeplitz(matrix, m, 0)) {
+                return false;
+            }
+        }
+        for (int n = 0; n < col - 1; n++) {
+            if (!isToeplitz(matrix, 0, n)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
