@@ -3,7 +3,7 @@ class Solution {
         if (pre.size() == nums.length) {
             res.add(new LinkedList(pre));
             return;
-        }
+        } 
         
         for (int i = 0; i < nums.length; i++) {
             if (!visited[i]) {
