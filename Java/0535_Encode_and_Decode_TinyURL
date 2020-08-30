@@ -1,0 +1,41 @@
+public class Codec {
+    int sequentialID = 0;
+    Map<String, String> shortToLong = new HashMap<>();
+    Map<String, String> longToShort = new HashMap<>();
+    // Encodes a URL to a shortened URL.
+    public String encode(String longUrl) {
+        if (longToShort.containsKey(longUrl)) {
+            return longToShort.get(longUrl);
+        }
+        int ID = sequentialID++;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            sb.insert(0, toChar(ID % 62));
+            ID /= 62;
+        }
+        sb.insert(0, "http://tinyurl.com/");
+        String shortUrl = sb.toString();
+        shortToLong.put(shortUrl, longUrl);
+        longToShort.put(longUrl, shortUrl);
+        return shortUrl;
+    }
+    
+    private char toChar(int n) {
+        if (n < 10) {
+            return (char)(n + '0');
+        } else if (n < 36) {
+            return (char)(n - 10 + 'a');
+        } else {
+            return (char)(n - 36 + 'A');
+        }
+    }
+    
+    // Decodes a shortened URL to its original URL.
+    public String decode(String shortUrl) {
+        return shortToLong.get(shortUrl);
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(url));
