@@ -1,0 +1,23 @@
+class Solution {
+    public boolean canThreePartsEqualSum(int[] A) {
+        int[] prefixSum = new int[A.length + 1];
+        for (int i = 0; i < A.length; i++) {
+            prefixSum[i + 1] = prefixSum[i] + A[i];
+        }
+        if (prefixSum[prefixSum.length - 1] % 3 != 0) {
+            return false;
+        }
+        int firstPart = prefixSum[prefixSum.length - 1] / 3;
+        int secondPart = firstPart * 2;
+        int firstPartIndex = -1, secondPartIndex = -1;
+        for (int i = 1; i < prefixSum.length - 1; i++) {
+            if (prefixSum[i] == firstPart && firstPartIndex == -1) {
+                firstPartIndex = i;
+            }
+            if (prefixSum[i] == secondPart) {
+                secondPartIndex = i;
+            }
+        }
+        return firstPartIndex != -1 && secondPartIndex != -1 && secondPartIndex > firstPartIndex;
+    }
+}
