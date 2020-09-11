@@ -1,0 +1,65 @@
+class Solution {
+    boolean solved;
+    private Pair<Integer, Integer> next(char[][] board, int m, int n) {
+        while (m < 9) {
+            while (n < 9) {
+                if (board[m][n] == '.') {
+                    return new Pair(m, n);
+                }
+                n += 1;
+            }
+            m += 1;
+            n = 0;
+        }
+        return null;
+    }
+    
+    private void dfs(char[][] board, boolean[][] rows, boolean[][] cols, boolean[][] blocks, int m, int n) {
+        if (solved) {
+            return;
+        }
+        for (int i = 0; i < 9; i++) {
+            char fill = (char)('1' + i);
+            if (rows[m][i] || cols[n][i] || blocks[(m / 3) * 3 + n / 3][i]) {
+                continue;
+            }
+            board[m][n] = fill;
+            rows[m][i] = true;
+            cols[n][i] = true;
+            blocks[m / 3 * 3 + n / 3][i] = true;
+            Pair<Integer, Integer> nextToFill = next(board, m, n);
+            if (nextToFill == null) {
+                solved = true;
+                return;
+            }
+            dfs(board, rows, cols, blocks, nextToFill.getKey(), nextToFill.getValue());
+            if (solved) {
+                break;
+            }
+            board[m][n] = '.';
+            rows[m][i] = false;
+            cols[n][i] = false;
+            blocks[m / 3 * 3 + n / 3][i] = false;
+        }
+    }
+    
+    public void solveSudoku(char[][] board) {
+        boolean[][] rows = new boolean[9][9];
+        boolean[][] cols = new boolean[9][9];
+        boolean[][] blocks = new boolean[9][9];
+        for (int m = 0; m < 9; m++) {
+            for (int n = 0; n < 9; n++) {
+                if (board[m][n] == '.') {
+                    continue;
+                }
+                int num = board[m][n] - '1';
+                rows[m][num] = true;
+                cols[n][num] = true;
+                blocks[m / 3 * 3 + n / 3][num] = true;
+            }
+        }
+        solved = false;
+        Pair<Integer, Integer> nextToFill = next(board, 0, 0);
+        dfs(board, rows, cols, blocks, nextToFill.getKey(), nextToFill.getValue());
+    }
+}
