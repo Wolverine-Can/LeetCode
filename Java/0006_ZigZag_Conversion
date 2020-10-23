@@ -1,0 +1,30 @@
+class Solution {
+    public String convert(String s, int numRows) {
+        if (numRows == 1) {
+            return s;
+        }
+        StringBuilder sb = new StringBuilder();
+        int frontN = s.length() / (2 * (numRows - 1));
+        frontN += s.length() % (2 * (numRows - 1)) == 0 ? 0 : 1;
+        for (int i = 0; i < frontN; i++) {
+            sb.append(s.charAt(i * 2 * (numRows - 1)));
+        }
+        
+        for (int j = 1; j < numRows - 1; j++) {
+            for (int i = 0; i < frontN + 1; i++) {
+                if ((i * 2 * (numRows - 1) - j) >= 0 && (i * 2 * (numRows - 1) - j) < s.length()) {
+                    sb.append(s.charAt(i * 2 * (numRows - 1) - j));
+                }
+                if ((i * 2 * (numRows - 1) + j) < s.length()) {
+                    sb.append(s.charAt(i * 2 * (numRows - 1) + j));
+                }
+            }
+        }
+        for (int i = 0; i < frontN; i++) {
+            if (i * 2 * (numRows - 1) + numRows - 1 < s.length()) {
+                sb.append(s.charAt(i * 2 * (numRows - 1) + numRows - 1));
+            }
+        }
+        return sb.toString();
+    }
+}
