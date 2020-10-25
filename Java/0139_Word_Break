@@ -1,21 +1,16 @@
-// DP
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
-        Map<Integer, Boolean> isPossible = new HashMap<>();
-        int maxLength = 0;
-        for (String str : wordDict) {
-            if (str.length() > maxLength)
-                maxLength = str.length();
-        }
-        isPossible.put(s.length(), true);
-        for (int i = s.length() - 1; i >= 0; i--) {
-            for (int j = i + 1; j - i <= maxLength && j <= s.length(); j++) {
-                if (wordDict.contains(s.substring(i, j)) && isPossible.get(j))
-                    isPossible.put(i, true);
+        Set<String> wordSet = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = i; j >= 0; j--) {
+                if (dp[j] && wordSet.contains(s.substring(j, i + 1))) {
+                    dp[i + 1] = true;
+                    break;
+                }
             }
-            if (!isPossible.containsKey(i))
-                isPossible.put(i, false);
         }
-        return isPossible.get(0);
+        return dp[s.length()];
     }
 }
