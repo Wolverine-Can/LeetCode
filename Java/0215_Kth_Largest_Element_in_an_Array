@@ -1,0 +1,38 @@
+class Solution {
+    private void swap(int[] nums, int index1, int index2) {
+        int temp = nums[index1];
+        nums[index1] = nums[index2];
+        nums[index2] = temp;
+    }
+    
+    private int quickSelect(int[] nums, int leftBound, int rightBound, int k) {
+        Random random = new Random();
+        int left = leftBound, right = rightBound;
+        if (left == right) {
+            return nums[left];
+        }
+        
+        int pivotIndex = left + random.nextInt(rightBound - leftBound + 1);
+        int pivot = nums[pivotIndex];
+        while (left <= right) {
+            while (left <= right && nums[left] < pivot) {
+                left++;
+            }
+            while (left <= right && nums[right] > pivot) {
+                right--;
+            }
+            if (left <= right) {
+                swap(nums, left++, right--);
+            }
+        }
+        if (left <= nums.length - k) {
+            return quickSelect(nums, left, rightBound, k);
+        } else {
+            return quickSelect(nums, leftBound, left - 1, k);
+        }
+    }
+    
+    public int findKthLargest(int[] nums, int k) {
+        return quickSelect(nums, 0, nums.length - 1, k);
+    }
+}
