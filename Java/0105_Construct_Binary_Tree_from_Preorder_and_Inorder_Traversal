@@ -19,17 +19,15 @@ class Solution {
             return null;
         }
         
-        int rootVal = preorder[pLeft];
-        TreeNode root = new TreeNode(rootVal);
+        TreeNode root = new TreeNode(preorder[pLeft]);
         int rootIndex = iLeft;
-        while (inorder[rootIndex] != rootVal) {
+        while (inorder[rootIndex] != root.val) {
             rootIndex += 1;
         }
-        int leftLen = rootIndex - iLeft;
-        root.left = buildTreeHelper(preorder, pLeft + 1, pLeft + leftLen, inorder, iLeft, rootIndex - 1);
-        root.right = buildTreeHelper(preorder, pLeft + 1 + leftLen, pRight, inorder, rootIndex + 1, iRight);
+        int leftCount = rootIndex - iLeft;
+        root.left = buildTreeHelper(preorder, pLeft + 1, pLeft + leftCount, inorder, iLeft, rootIndex - 1);
+        root.right = buildTreeHelper(preorder, pLeft + 1 + leftCount, pRight, inorder, rootIndex + 1, iRight);
         return root;
-        
     }
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         int N = preorder.length;
