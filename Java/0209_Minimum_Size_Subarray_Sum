@@ -1,17 +1,15 @@
 class Solution {
-    public int minSubArrayLen(int s, int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
+    public int firstUniqChar(String s) {
+        int[] charCounts = new int[26];
+        char[] charArr = s.toCharArray();
+        for (char c : charArr) {
+            charCounts[c - 'a'] += 1;
         }
-        int left = 0, sum = 0, ans = Integer.MAX_VALUE;
-        for (int right = 0; right < nums.length; right++) {
-            sum += nums[right];
-            while (sum >= s) {
-                ans = Math.min(ans, right - left + 1);
-                sum -= nums[left];
-                left += 1;
+        for (int i = 0; i < charArr.length; i++) {
+            if (charCounts[charArr[i] - 'a'] == 1) {
+                return i;
             }
         }
-        return ans == Integer.MAX_VALUE ? 0 : ans;
+        return -1;
     }
 }
