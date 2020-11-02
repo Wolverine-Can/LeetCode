@@ -1,0 +1,14 @@
+class Solution {
+    public int subarraysDivByK(int[] A, int K) {
+        int[] modK = new int[K];
+        modK[0] = 1;
+        int ans = 0;
+        int preSum = 0;
+        for (int i : A) {
+            preSum += (i % K + K) % K;
+            ans += modK[preSum % K];
+            modK[preSum % K] += 1;
+        }
+        return ans;
+    }
+}
