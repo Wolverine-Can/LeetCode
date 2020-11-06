@@ -1,0 +1,40 @@
+class Solution {
+    public int longestSubstring(String s, int k) {
+        int[] chars = new int[26];
+        int totalKCharCount = 0;
+        for(char c : s.toCharArray()) {
+            chars[c - 'a'] += 1;
+            if(chars[c - 'a'] == k) {
+                totalKCharCount += 1;   
+            }
+        }
+        int maxLength = 0;
+        for (int i = 1; i <= totalKCharCount; i++) {
+            int left = 0, charCount = 0, kCharCount = 0;
+            int[] charsCount = new int[26];
+            for (int right = 0; right < s.length(); right++) {
+                charsCount[s.charAt(right) - 'a'] += 1;
+                if(charsCount[s.charAt(right) - 'a'] == 1) {
+                    charCount += 1;
+                }
+                if(charsCount[s.charAt(right) - 'a'] == k) {
+                    kCharCount += 1;
+                }
+                while (charCount > i) {
+                    charsCount[s.charAt(left) - 'a'] -= 1;
+                    if (charsCount[s.charAt(left) - 'a'] == 0) {
+                        charCount -= 1;
+                    }
+                    if (charsCount[s.charAt(left) - 'a'] == k - 1) {
+                        kCharCount -= 1;
+                    }
+                    left += 1;
+                }
+                if (charCount == i && kCharCount == i) {
+                    maxLength = Math.max(maxLength, right - left + 1);
+                }
+            }
+        }
+        return maxLength;
+    }
+}
