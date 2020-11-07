@@ -1,0 +1,48 @@
+class Solution {
+    boolean finished;
+    List<String> res;
+    
+    public List<String> findItinerary(List<List<String>> tickets) {
+        finished = false;
+        res = new ArrayList<>();
+        Collections.sort(tickets, (a, b) -> {
+            String a0 = a.get(0), a1 = a.get(1), b0 = b.get(0), b1 = b.get(1);
+            return a0.equals(b0) ? a1.compareTo(b1) : a0.compareTo(b0);
+        });
+        
+        List<String> pre = new ArrayList<>();
+        pre.add("JFK");
+        for (int i = 0; i < tickets.size() && !finished; i++) {
+            List<String> ticket = tickets.get(i);
+            if (ticket.get(0).equals("JFK")) {
+                pre.add(ticket.get(1));
+                tickets.remove(i);
+                dfs(tickets, pre);
+                tickets.add(i, ticket);
+                pre.remove(pre.size() - 1);
+            }
+        }
+        return res;
+    }
+    
+    private void dfs(List<List<String>> tickets, List<String> pre) {
+        if (tickets.size() == 0 || finished) {
+            res.addAll(pre);
+            finished = true;
+            return;
+        }
+        
+        String start = pre.get(pre.size() - 1);
+        
+        for (int i = 0; i < tickets.size() && !finished; i++) {
+            List<String> ticket = tickets.get(i);
+            if (ticket.get(0).equals(start)) {
+                pre.add(ticket.get(1));
+                tickets.remove(i);
+                dfs(tickets, pre);
+                tickets.add(i, ticket);
+                pre.remove(pre.size() - 1);
+            }
+        }
+    }
+}
