@@ -1,0 +1,37 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node prev;
+    public Node next;
+    public Node child;
+};
+*/
+
+class Solution {
+    private void helper(Node n) {
+        Node next = n.next;
+        Node child = n.child;
+        n.next = child;
+        child.prev = n;
+        while (child.next != null) {
+            child = child.next;
+        }
+        if (next != null) {
+            next.prev = child;
+        }
+        child.next = next;
+    }
+    
+    public Node flatten(Node head) {
+        Node n = head;
+        while (n != null) {
+            if (n.child != null) {
+                helper(n);
+                n.child = null;
+            }
+            n = n.next;
+        }
+        return head;
+    }
+}
