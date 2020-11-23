@@ -1,0 +1,23 @@
+class Solution {
+    public int minimumEffort(int[][] tasks) {
+        PriorityQueue<int[]> PQ = new PriorityQueue<>((a, b) -> {
+            int diffA = a[1] - a[0];
+            int diffB = b[1] - b[0];
+            return diffB - diffA;
+        });
+        for (int[] task : tasks) {
+            PQ.offer(task);
+        }
+        int ans = 0, energy = 0;
+        while (!PQ.isEmpty()) {
+            int[] task = PQ.poll();
+            if (energy < task[1]) {
+                int diff = task[1] - energy;
+                ans += diff;
+                energy += diff;
+            }
+            energy -= task[0];
+        }
+        return ans;
+    }
+}
