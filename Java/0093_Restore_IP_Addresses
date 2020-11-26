@@ -1,30 +1,41 @@
 class Solution {
-    private void dfs(String s, int index, List<String> pre, List<String> ans) {
-        if(s.length() - index > 3 * (4 - pre.size())) {
-            return;
+    private String toIP(List<String> lst) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            sb.append(lst.get(i));
+            sb.append(".");
         }
-        if (pre.size() == 4 && index == s.length()) {
-            String ip = pre.get(0);
-            for (int i = 1; i < 4; i++) {
-                ip += '.' + pre.get(i);
-            }
-            ans.add(ip);
-        }
-        int number = 0;
-        for (int i = index; i < s.length() && i < index + 3; i++) {
-            number = 10 * number + s.charAt(i) - '0';
-            int lowBound = (i == index) ? 0 : (int)Math.pow(10, i - index);
-            if (number < 256 && number >= lowBound) {
-                pre.add(Integer.toString(number));
-                dfs(s, i + 1, pre, ans);
-                pre.remove(pre.size() - 1);
-            }
-        }
+        sb.append(lst.get(3));
+        return sb.toString();
     }
     
+    private void dfs(String s, List<String> res, int index, ArrayList<String> pre) {
+        if (index == s.length()) {
+            if (pre.size() == 4) {
+                res.add(toIP(pre));
+            }
+            return;
+        }
+        if (pre.size() == 4) {
+            return;
+        }
+        for (int i = index; i < index + 3 && i < s.length(); i++) {
+            String numStr = s.substring(index, i + 1);
+            int num = Integer.parseInt(numStr);
+            if (numStr.length() > 1 && numStr.charAt(0) == '0') {
+                continue;
+            }
+            if (num >= 0 && num <= 255) {
+                pre.add(numStr);
+                dfs(s, res, i + 1, pre);
+                pre.remove(pre.size() - 1);
+            } 
+        }
+    }
+                                       
     public List<String> restoreIpAddresses(String s) {
-        List<String> ans = new LinkedList<>();
-        dfs(s, 0, new LinkedList<String>(), ans);
-        return ans;
+        List<String> res = new ArrayList<>();
+        dfs(s, res, 0, new ArrayList<String>());
+        return res;
     }
 }
