@@ -1,0 +1,38 @@
+class Solution {
+    public int maxSumTwoNoOverlap(int[] A, int L, int M) {
+        int[] LSum = new int[A.length - L + 1];
+        int[] MSum = new int[A.length - M + 1];
+        int[] LRightMaxSum = new int[LSum.length];
+        int[] MRightMaxSum = new int[MSum.length];
+        for (int i = 0; i < L; i++) {
+            LSum[0] += A[i];
+        }
+        for (int i = 1; i < LSum.length; i++) {
+            LSum[i] = LSum[i - 1] - A[i - 1] + A[i + L - 1];
+        }
+        for (int i = 0; i < M; i++) {
+            MSum[0] += A[i];
+        }
+        for (int i = 1; i < MSum.length; i++) {
+            MSum[i] = MSum[i - 1] - A[i - 1] + A[i + M - 1];
+        }
+        int LRightMaxS = 0, MRightMaxS = 0;
+        for (int i = LSum.length - 1; i >= 0; i--) {
+            LRightMaxS = Math.max(LSum[i], LRightMaxS);
+            LRightMaxSum[i] = LRightMaxS;
+        }
+        for (int i = MSum.length - 1; i >= 0; i--) {
+            MRightMaxS = Math.max(MSum[i], MRightMaxS);
+            MRightMaxSum[i] = MRightMaxS;
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < LSum.length && (i + L) < MSum.length; i++) {
+            ans = Math.max(ans, LSum[i] + MRightMaxSum[i + L]);
+        }
+        for (int i = 0; i < MSum.length && (i + M) < LSum.length; i++) {
+            ans = Math.max(ans, MSum[i] + LRightMaxSum[i + M]);
+        }
+        return ans;
+    }
+}
