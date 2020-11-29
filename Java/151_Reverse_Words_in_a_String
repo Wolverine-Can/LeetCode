@@ -1,0 +1,37 @@
+class Solution {
+    private List<String> getWords(String s) {
+        List<String> words = new ArrayList<>();
+        int index = 0;
+        while (index < s.length()) {
+            while (index < s.length() && s.charAt(index) == ' ') {
+                index += 1;
+            }
+            int start = index;
+            while (index < s.length() && s.charAt(index) != ' ') {
+                index += 1;
+            }
+            if (start != index) {
+                words.add(s.substring(start, index));
+            }
+        }
+        return words;
+    }
+    
+    private String reverse(List<String> words) {
+        if (words.size() == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = words.size() - 1; i > 0; i--) {
+            sb.append(words.get(i));
+            sb.append(' ');
+        }
+        sb.append(words.get(0));
+        return sb.toString();
+    }
+    
+    public String reverseWords(String s) {
+        List<String> words = getWords(s);
+        return reverse(words);
+    }
+}
