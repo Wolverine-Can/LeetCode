@@ -1,0 +1,14 @@
+class Solution {
+    public int missingElement(int[] nums, int k) {
+        int left = 0, right = nums.length - 1;
+        while (left + 1 < right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] - nums[0] - k >= mid) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return nums[right] - nums[0] - k >= right ? left + k + nums[0] : right + k + nums[0];
+    }
+}
