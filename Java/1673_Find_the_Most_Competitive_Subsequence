@@ -1,0 +1,23 @@
+class Solution {
+    public int[] mostCompetitive(int[] nums, int k) {
+        int[] ans = new int[k];
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int i = 0; i < nums.length - k; i++) {
+            int num = nums[i];
+            while (!deque.isEmpty() && deque.peekLast() > num) {
+                deque.removeLast();
+            }
+            deque.addLast(num);
+        }
+        int index = 0;
+        for (int i = nums.length - k; i < nums.length; i++) {
+            int num = nums[i];
+            while (!deque.isEmpty() && deque.peekLast() > num) {
+                deque.removeLast();
+            }
+            deque.addLast(num);
+            ans[index++] = deque.removeFirst();
+        }
+        return ans;
+    }
+}
