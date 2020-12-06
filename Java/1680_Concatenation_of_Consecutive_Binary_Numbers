@@ -1,0 +1,26 @@
+class Solution {
+    public int mod = 1000000007;
+    
+    private int toDecimal(String binaryStr) {
+        int index = 0;
+        int res = 0;
+        while (index < binaryStr.length()) {
+            res = res * 2;
+            res += binaryStr.charAt(index) == '0' ? 0 : 1;
+            res = res % mod;
+            index += 1;
+        }
+        return res;
+    }
+    
+    public int concatenatedBinary(int n) {
+        StringBuilder sb = new StringBuilder();
+        int num = 1;
+        while (num <= n) {
+            String binaryStr = Integer.toBinaryString(num);
+            sb.append(binaryStr);
+            num += 1;
+        }
+        return toDecimal(sb.toString());
+    }
+}
