@@ -1,0 +1,19 @@
+class Solution {
+    public int maxResult(int[] nums, int k) {
+        int[] dp = new int[nums.length];
+        Deque<Integer> deque = new ArrayDeque<>();
+        dp[0] = nums[0];
+        deque.offer(0);
+        for (int i = 1; i < dp.length; i++) {
+            while (!deque.isEmpty() && i - deque.getFirst() > k) {
+                deque.pollFirst();
+            }
+            dp[i] = nums[i] + dp[deque.getFirst()];
+            while (!deque.isEmpty() && dp[i] > dp[deque.getLast()]) {
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+        }
+        return dp[dp.length - 1];
+    }
+}
