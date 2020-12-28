@@ -1,29 +1,26 @@
 class Solution {
     public int findUnsortedSubarray(int[] nums) {
-        int firstTurn = 1, min = Integer.MAX_VALUE;
-        int lastTurn = nums.length - 2, max = Integer.MIN_VALUE;
-        int startIndex = 0, endIndex = nums.length - 1;
-        
-        while (firstTurn < nums.length && nums[firstTurn] > nums[firstTurn - 1]) {
-            firstTurn += 1;
+        int firstTurnIndex = 0, lastTurnIndex = nums.length - 1;
+        while (firstTurnIndex + 1 < nums.length && nums[firstTurnIndex] <= nums[firstTurnIndex + 1]) {
+            firstTurnIndex += 1;
         }
-        for (int i = firstTurn; i < nums.length; i++) {
+        while (lastTurnIndex - 1 >= 0 && nums[lastTurnIndex - 1] <= nums[lastTurnIndex]) {
+            lastTurnIndex -= 1;
+        }
+        
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+        for (int i = firstTurnIndex; i <= lastTurnIndex; i++) {
             min = Math.min(min, nums[i]);
-        }
-        while (startIndex <= endIndex && nums[startIndex] <= min) {
-            startIndex += 1;
-        }
-        
-        
-        while (lastTurn >= firstTurn && nums[lastTurn] < nums[lastTurn + 1]) {
-            lastTurn -= 1;
-        }
-        for (int i = lastTurn; i >= 0; i--) {
             max = Math.max(max, nums[i]);
         }
-        while (startIndex <= endIndex && nums[endIndex] >= max) {
-            endIndex -= 1;
+        
+        int startIndex = firstTurnIndex, endIndex = lastTurnIndex;
+        while (startIndex > 0 && nums[startIndex - 1] > min) {
+            startIndex -= 1;
         }
-        return endIndex - startIndex + 1;
+        while (endIndex < nums.length - 1 && nums[endIndex + 1] < max) {
+            endIndex += 1;
+        }
+        return endIndex <= startIndex ? 0 : endIndex - startIndex + 1;
     }
 }
