@@ -20,27 +20,35 @@ class Node {
 */
 
 class Solution {
-    private void inOrder (Node root, List<Node> nodes) {
-        if (root == null) {
-            return;
-        }
-        inOrder(root.left, nodes);
-        nodes.add(root);
-        inOrder(root.right, nodes);
-    }
-    
-    public Node treeToDoublyList(Node root) {
+    private Pair<Node, Node> helper(Node root) {
         if (root == null) {
             return null;
         }
-        List<Node> nodes = new ArrayList<>();
-        inOrder(root, nodes);
-        for (int i = 0; i < nodes.size(); i++) {
-            Node first = nodes.get(i);
-            Node second = nodes.get((i + 1) % nodes.size());
-            first.right = second;
-            second.left = first;
+        Node head = root, tail = root;
+        Pair<Node, Node> leftHeadAndTail = helper(root.left);
+        Pair<Node, Node> rightHeadAndTail = helper(root.right);
+        if (leftHeadAndTail != null) {
+            Node leftHead = leftHeadAndTail.getKey();
+            Node leftTail = leftHeadAndTail.getValue();
+            head = leftHead;
+            leftTail.right = root;
+            root.left = leftTail;
         }
-        return nodes.get(0);
+        if (rightHeadAndTail != null) {
+            Node rightHead = rightHeadAndTail.getKey();
+            Node rightTail = rightHeadAndTail.getValue();
+            tail = rightTail;
+            rightHead.left = root;
+            root.right = rightHead;
+        }
+        head.left = tail;
+        tail.right = head;
+        return new Pair(head, tail);
+    }
+    
+    
+    public Node treeToDoublyList(Node root) {
+        Pair<Node, Node> headAndTail = helper(root);
+        return headAndTail == null ? null : headAndTail.getKey();
     }
 }
