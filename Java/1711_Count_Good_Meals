@@ -1,0 +1,34 @@
+class Solution {
+    int MOD = (int)1e9 + 7;
+    private int countPair(int aCount, int bCount, boolean aEqualsB) {
+        if (!aEqualsB) {
+            return (int) ((long) aCount * (long) bCount % MOD);
+        } else {
+            long n = aCount;
+            long ans = (n - 1) * n / 2;
+            return (int) (ans % MOD);
+        }
+    }
+    
+    public int countPairs(int[] deliciousness) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        int ans = 0;
+        for (int i : deliciousness) {
+            freq.put(i, freq.getOrDefault(i, 0) % MOD + 1);
+        }
+        for(int num : freq.keySet()) {
+            for (int power = 21; power >= 0; power--) {
+                int sum = (int) Math.pow(2, power);
+                if (sum < num * 2) {
+                    break;
+                }
+                int comp = sum - num;
+                if (freq.containsKey(comp)) {
+                    ans += countPair(freq.get(num), freq.get(comp), num == comp);
+                    ans %= MOD;
+                }
+            }
+        }
+        return ans;
+    }
+}
