@@ -1,34 +1,46 @@
 class Solution {
+    public class Event{
+        public int time;
+        public int eventFlag;
+        public Event(int time, int eventFlag) {
+            this.time = time;
+            this.eventFlag = eventFlag;
+        }
+    }
+    
     public List<Integer> minAvailableDuration(int[][] slots1, int[][] slots2, int duration) {
-        Arrays.sort(slots1, (a, b) -> a[0] - b[0]);
-        Arrays.sort(slots2, (a, b) -> a[0] - b[0]);
-        int overlap = 0, i1 = 0, i2 =0, startTime = 0;
-        while (i1 < 2 * slots1.length && i2 < 2 * slots2.length) {
-            boolean end = false;
-            int currentTime = -1;
-            int index1 = i1 / 2, startOrEnd1 = i1 % 2;
-            int index2 = i2 / 2, startOrEnd2 = i2 % 2;
-            if (slots1[index1][startOrEnd1] < slots2[index2][startOrEnd2]) {
-                currentTime = slots1[index1][startOrEnd1];
-                overlap += startOrEnd1 == 0? 1 : -1;
-                end = startOrEnd1 == 0? false : true;
-                i1 += 1;
+        int START = 0, END = 1;
+        Event[] events = new Event[2 * slots1.length + 2 * slots2.length];
+        int index = 0;
+        for (int[] slot : slots1) {
+            events[index++] = new Event(slot[0], START);
+            events[index++] = new Event(slot[1], END);
+        }
+        for (int[] slot : slots2) {
+            events[index++] = new Event(slot[0], START);
+            events[index++] = new Event(slot[1], END);
+        }
+        Arrays.sort(events, (a, b) -> {
+            return a.time - b.time;
+        });
+        
+        int availCount = 0, startTime = 0;
+        List<Integer> ans = new ArrayList<>();
+        for (Event event : events) {
+            if (event.eventFlag == START) {
+                availCount += 1;
+                if (availCount == 2) {
+                    startTime = event.time;
+                }
             } else {
-                currentTime = slots2[index2][startOrEnd2];
-                overlap += startOrEnd2 == 0? 1 : -1;
-                end = startOrEnd2 == 0? false : true;
-                i2 += 1;
-            }
-            if (overlap == 2) {
-                startTime = currentTime;
-            }
-            if (overlap == 1 && end && currentTime - startTime >= duration) {
-                List<Integer> ans = new ArrayList<>();
-                ans.add(startTime);
-                ans.add(startTime + duration);
-                return ans;
+                availCount -= 1;
+                if (availCount == 1 && event.time - startTime >= duration) {
+                    ans.add(startTime);
+                    ans.add(startTime + duration);
+                    break;
+                }
             }
         }
-        return new ArrayList<>();
+        return ans;
     }
 }
