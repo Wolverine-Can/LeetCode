@@ -1,0 +1,27 @@
+class Solution {
+    public int minDifficulty(int[] jobDifficulty, int d) {
+        int n = jobDifficulty.length;
+        int[][] dp = new int[d][n];
+        if (d > n) {
+            return - 1;
+        }
+        for (int[] arr : dp) {
+            Arrays.fill(arr, Integer.MAX_VALUE);
+        }
+        int maxDifficultyDay1 = 0;
+        for (int end = 0; end <= n - d; end++) {
+            maxDifficultyDay1 = Math.max(maxDifficultyDay1, jobDifficulty[end]);
+            dp[0][end] = maxDifficultyDay1;
+        }
+        for (int i = 1; i < d; i++) {
+            for(int start = i; start <= n - d + i; start++) {
+                int maxDifficulty = 0;
+                for(int end = start; end <= n - d + i; end++) {
+                    maxDifficulty = Math.max(maxDifficulty, jobDifficulty[end]);
+                    dp[i][end] = Math.min(dp[i][end], dp[i - 1][start - 1] + maxDifficulty);
+                }
+            }
+        }
+        return dp[d - 1][n - 1];
+    }
+}
