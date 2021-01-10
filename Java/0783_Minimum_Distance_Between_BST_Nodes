@@ -1,0 +1,43 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    int ans;
+    
+    private Pair<Integer, Integer> findMinAndMax(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        int min = root.val, max = root.val;
+        Pair<Integer, Integer> leftMinAndMax = findMinAndMax(root.left);
+        Pair<Integer, Integer> rightMinAndMax = findMinAndMax(root.right);
+        if(leftMinAndMax != null) {
+            ans = Math.min(ans, Math.abs(root.val - leftMinAndMax.getValue()));
+            min = leftMinAndMax.getKey();
+        }
+        if(rightMinAndMax != null) {
+            ans = Math.min(ans, Math.abs(root.val - rightMinAndMax.getKey()));
+            max = rightMinAndMax.getValue();
+        }
+        return new Pair(min, max);
+    }
+    
+    
+    public int minDiffInBST(TreeNode root) {
+        ans = Integer.MAX_VALUE;
+        findMinAndMax(root);
+        return ans;
+    }
+}
