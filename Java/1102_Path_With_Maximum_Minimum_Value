@@ -1,0 +1,43 @@
+class Solution {
+    class Node {
+        int m, n, min;
+        Node(int m, int n, int min) {
+            this.m = m;
+            this.n = n;
+            this. min = min;
+        }
+    }
+    private boolean inBound(int[][] grid, int m, int n) {
+        int row = grid.length, col = grid[0].length;
+        return m >= 0 && m < row && n >= 0 && n < col;
+    }
+    
+    public int maximumMinimumPath(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return -1;
+        }
+        int row = grid.length, col = grid[0].length;
+        PriorityQueue<Node> PQ = new PriorityQueue<>((a, b) -> (b.min - a.min));
+        boolean[][] visited = new boolean[row][col];
+        PQ.offer(new Node(0, 0, grid[0][0]));
+        visited[0][0] = true;
+        int[] dm = {0, 0, 1, -1};
+        int[] dn = {1, -1, 0, 0};
+        while (!PQ.isEmpty()) {
+            Node node = PQ.poll();
+            int m = node.m, n = node.n;
+            if (m == row - 1 && n == col - 1) {
+                return node.min;
+            }
+            for (int i = 0; i < 4; i++) {
+                int nm = m + dm[i];
+                int nn = n + dn[i];
+                if(inBound(grid, nm, nn) && !visited[nm][nn]) {
+                    visited[nm][nn] = true;
+                    PQ.offer(new Node(nm, nn, Math.min(grid[nm][nn], node.min)));
+                }
+            }
+        }
+        return -1;
+    }
+}
