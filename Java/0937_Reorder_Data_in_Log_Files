@@ -1,0 +1,57 @@
+class Solution {
+    public class LogComparator implements Comparator<String> {
+        @Override
+        public int compare(String log1, String log2) {
+            String content1 = getContent(log1);
+            String content2 = getContent(log2);
+            if(content1.equals(content2)) {
+                String identifier1 = getIdentifier(log1);
+                String identifier2 = getIdentifier(log2);
+                return identifier1.compareTo(identifier2);
+            } else {
+                return content1.compareTo(content2);
+            }
+        }
+    }
+    
+    private String getIdentifier(String log) {
+        int index = 0;
+        while(index < log.length() && log.charAt(index) != ' ') {
+            index += 1;
+        }
+        return log.substring(0, index);
+    }
+    
+    private String getContent(String log) {
+        int index = 0;
+        while(index < log.length() && log.charAt(index) != ' ') {
+            index += 1;
+        }
+        return log.substring(index + 1);
+    }
+    
+    private boolean isLetterLog(String log) {
+        int index = 0;
+        while(index < log.length() && log.charAt(index) != ' ') {
+            index += 1;
+        }
+        return log.charAt(index + 1) < '0' || log.charAt(index + 1) > '9';
+    }
+    
+    public String[] reorderLogFiles(String[] logs) {
+        List<String> letterLogList = new ArrayList<>();
+        List<String> digitLogList = new ArrayList<>();
+        for(String s : logs) {
+            if(isLetterLog(s)) {
+                letterLogList.add(s);
+            } else {
+                digitLogList.add(s);
+            }
+        }
+        Collections.sort(letterLogList, new LogComparator());
+        List<String> res = new ArrayList<>();
+        res.addAll(letterLogList);
+        res.addAll(digitLogList);
+        return res.toArray(new String[logs.length]);
+    }
+}
