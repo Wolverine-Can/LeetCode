@@ -1,0 +1,28 @@
+class Solution {
+    private Queue<Integer> getVerNum(String version) {
+        int index = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        while(index < version.length()) {
+            int index2 = index;
+            while(index2 < version.length() && version.charAt(index2) != '.') {
+                index2 += 1;
+            }
+            queue.offer(Integer.parseInt(version.substring(index, index2)));
+            index = index2 + 1;
+        }
+        return queue;
+    }
+    
+    public int compareVersion(String version1, String version2) {
+        Queue<Integer> v1 = getVerNum(version1);
+        Queue<Integer> v2 = getVerNum(version2);
+        while(!v1.isEmpty() || !v2.isEmpty()) {
+            int num1 = v1.isEmpty() ? 0 : v1.poll();
+            int num2 = v2.isEmpty() ? 0 : v2.poll();
+            if(num1 != num2) {
+                return num1 < num2 ? -1 : 1;
+            }
+        }
+        return 0;
+    }
+}
