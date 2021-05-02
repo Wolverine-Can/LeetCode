@@ -1,0 +1,34 @@
+class Solution {
+    private boolean isPeak(int[] prices, int i) {
+        if(i == 0 || prices[i - 1] >= prices[i]) {
+            return false;
+        }
+        if(i < prices.length - 1 && prices[i + 1] > prices[i]) {
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean isValley(int[] prices, int i) {
+        if(i == prices.length - 1 || prices[i + 1] <= prices[i]) {
+            return false;
+        }
+        if(i > 0 && prices[i - 1] < prices[i]) {
+            return false;
+        }
+        return true;
+    }
+    
+    public int maxProfit(int[] prices) {
+        int buyPrice = 0, maxProfit = 0;
+        for(int i = 0; i < prices.length; i++) {
+            if(isPeak(prices, i)) {
+                maxProfit += prices[i] - buyPrice;
+            }
+            if(isValley(prices, i)) {
+                buyPrice = prices[i];
+            }
+        }
+        return maxProfit;
+    }
+}
