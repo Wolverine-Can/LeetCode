@@ -10,25 +10,22 @@
 class Solution {
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
         if (p.right != null) {
-            TreeNode ans;
-            ans = p.right;
-            while (ans.left != null) {
-                ans = ans.left;
+            TreeNode n = p.right;
+            while (n.left != null) {
+                n = n.left;        
             }
-            return ans;
+            return n;
         }
         Stack<TreeNode> stack = new Stack<>();
-        while (root != p) {
-            stack.push(root);
-            if (p.val < root.val) {
-                root = root.left;
+        TreeNode cur = root;
+        while(cur != p) {
+            if(cur.val < p.val) {
+                cur = cur.right;
             } else {
-                root = root.right;
+                stack.push(cur);
+                cur = cur.left;
             }
         }
-        while (!stack.isEmpty() && stack.peek().right == p) {
-            p = stack.pop();
-        }
-        return stack.isEmpty() ? null : stack.peek();
+        return stack.isEmpty() ? null : stack.pop();
     }
 }
