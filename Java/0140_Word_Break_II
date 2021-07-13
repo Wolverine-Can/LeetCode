@@ -1,39 +1,44 @@
-//dp
 class Solution {
-    private boolean canBreak(String s, int preLength, List<String> wordDict,
-                Map<Integer, Boolean> isPossible, int maxLength, String preStr, List<String> res) {
-        if (isPossible.containsKey(preLength) && !isPossible.get(preLength))
-            return false;
-        if (s.equals("")) {
-            res.add(preStr.substring(1));
+    private int longest = 0;
+    
+    private boolean canBreak(String s, Set<String> wordSet, int index, StringBuilder pre, boolean[] canBreakMemo, List<String> res) {
+        if(index == s.length()) {
+            res.add(pre.toString());
             return true;
         }
-        boolean canbreak = false;
-        for (int i = 1; i <= maxLength && i <= s.length(); i++) {
-            String substr = s.substring(0, i);
-            if (!wordDict.contains(substr))
-                continue;
-            if (canBreak(s.substring(i), preLength + i, wordDict, isPossible,
-                   maxLength, preStr + " " + substr, res)) {
-                isPossible.put(preLength, true);
-                canbreak = true;
+        if(!canBreakMemo[index]) {
+            return false;
+        }
+        boolean returnValue = false;
+        for(int i = index; i < s.length() && i - index + 1 <= longest; i++) {
+            if(wordSet.contains(s.substring(index, i + 1))) {
+                String word = s.substring(index, i + 1);
+                int preLeng = pre.length();
+                if(pre.length() != 0) {
+                    pre.append(' ');
+                }
+                pre.append(word);
+                if (canBreak(s, wordSet, i + 1, pre, canBreakMemo, res)) {
+                    returnValue = true;
+                }
+                pre.delete(preLeng, pre.length());
             }
         }
-        if (!isPossible.containsKey(preLength)) {
-            isPossible.put(preLength, false);
-        }
-        return canbreak;
+        canBreakMemo[index] = returnValue;
+        return returnValue;
     }
     
+    
     public List<String> wordBreak(String s, List<String> wordDict) {
-        List<String> res = new LinkedList<>();
-        Map<Integer, Boolean> isPossible = new HashMap<>();
-        int maxLength = 0;
-        for (String str : wordDict) {
-            if (str.length() > maxLength)
-                maxLength = str.length();
+        List<String> res = new ArrayList<>();
+        boolean[] canBreakMemo = new boolean[s.length()];
+        Set<String> wordSet = new HashSet<>();
+        Arrays.fill(canBreakMemo, true);
+        for(String word : wordDict) {
+            longest = Math.max(longest, word.length());
+            wordSet.add(word);
         }
-        canBreak(s, 0, wordDict, isPossible, maxLength, "", res);
+        canBreak(s, wordSet, 0, new StringBuilder(), canBreakMemo, res);
         return res;
     }
 }
