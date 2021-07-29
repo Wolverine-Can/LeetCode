@@ -1,0 +1,23 @@
+class Solution {
+    private int dfs(int left, int right, int[][] memo) {
+        if(left >= right) {
+            return 0;
+        }
+        if(memo[left][right] != 0) {
+            return memo[left][right];
+        }
+        int min = Integer.MAX_VALUE;
+        for(int root = left; root <= right; root++) {
+            int leftSum = dfs(left, root - 1, memo);
+            int rightSum = dfs(root + 1, right, memo);
+            min = Math.min(min, root + Math.max(leftSum, rightSum));
+        }
+        memo[left][right] = min;
+        return min;
+    }
+    
+    public int getMoneyAmount(int n) {
+        int[][] memo = new int[n + 1][n + 1];
+        return dfs(1, n, memo);
+    }
+}
