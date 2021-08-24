@@ -1,0 +1,62 @@
+class Solution {
+    class UnionFind {
+        private int[] parents;
+        private int setCount;
+        public UnionFind(int n) {
+            parents = new int[n];
+            Arrays.fill(parents, -1);
+            setCount = n;
+        }
+        
+        public void union(int x, int y) {
+            int hx = find(x);
+            int hy = find(y);
+            if(hx != hy) {
+                parents[hx] = hy;
+                setCount -= 1;
+            }
+        }
+        
+        public int find(int x) {
+            int head = x;
+            while(parents[head] >= 0) {
+                head = parents[head];
+            }
+            while(x != head) {
+                int px = parents[x];
+                parents[x] = head;
+                x = px;
+            }
+            return head;
+        }
+        
+        public int getSetCount() {
+            return setCount;
+        }
+        
+        public boolean isConnected(int x, int y) {
+            int hx = find(x), hy = find(y);
+            return hx == hy;
+        }
+        
+    }
+    public int minimumCost(int n, int[][] connections) {
+        int totalCost = 0;
+        UnionFind uf = new UnionFind(n);
+        Arrays.sort(connections, (a, b) -> {
+           return a[2] - b[2]; 
+        });
+        for(int i = 0; i < connections.length; i++) {
+            int[] connection = connections[i];
+            int x = connection[0] - 1, y = connection[1] - 1, cost = connection[2];
+            if(!uf.isConnected(x, y)) {
+                uf.union(x, y);
+                totalCost += cost;
+            }
+            if(uf.getSetCount() == 1) {
+                break;
+            }
+        }
+        return uf.getSetCount() == 1 ? totalCost : -1;
+    }
+}
